@@ -2,6 +2,9 @@ module Main where
 
 import qualified Day1
 import qualified Day2
+import qualified Day3
+
+import Text.Regex.PCRE
 
 day1 :: IO ()
 day1 = do
@@ -18,7 +21,18 @@ day2 = do
   print $ Day2.solution1 xs
   print $ Day2.solution2 xs
 
+day3 :: IO ()
+day3 = do
+  file <- readFile "./test/day3.txt"
+  let rs = map parseLine $ lines file where
+        parseLine :: String -> Day3.Rectangle
+        parseLine s = let stringResult = s =~ "\\d+" :: AllTextMatches [] String
+                          [_, x, y, w, h] = map read $ getAllTextMatches stringResult :: [Int]
+                      in Day3.Rectangle x y w h
+  print $ Day3.solution1 rs
+
 main :: IO ()
 main = do
   day1
   day2
+  day3

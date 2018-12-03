@@ -3,6 +3,7 @@ import Test.Hspec.Runner (configFastFail, defaultConfig, hspecWith)
 
 import qualified Day1
 import qualified Day2
+import qualified Day3
 
 main :: IO ()
 main = hspecWith defaultConfig { configFastFail = True} specs
@@ -20,3 +21,6 @@ specs =
           Day2.solution1 [ "abcdef" , "bababc" , "abbcde" , "abcccd" , "aabcdd" , "abcdee" , "ababab"] `shouldBe` 12
         it "returns commonn letters of two similar strings" $ do
           Day2.solution2 [ "abcde","fghij","klmno","pqrst","fguij","axcye","wvxyz"] `shouldBe` "fgij"
+      describe "day 3" $ do
+        it "returns number of overlapping points" $ do
+          Day3.solution1 [ Day3.Rectangle  1 3 4 4, Day3.Rectangle 3 1 4 4, Day3.Rectangle 5 5 2 2] `shouldBe` 4

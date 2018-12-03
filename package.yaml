@@ -26,9 +26,9 @@ library:
   source-dirs: src
   dependencies:
   - containers
-  - text
   - bifunctors
-  - attoparsec
+  - text
+  - parsec
 
 executables:
   advent-of-code-exe:
@@ -40,6 +40,7 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - advent-of-code
+    - regex-pcre
 
 tests:
   advent-of-code-test:
