@@ -27,8 +27,8 @@ day3 = do
   let rs = map parseLine $ lines file where
         parseLine :: String -> Day3.Rectangle
         parseLine s = let stringResult = s =~ "\\d+" :: AllTextMatches [] String
-                          [id, x, y, w, h] = map read $ getAllTextMatches stringResult :: [Int]
-                      in Day3.Rectangle id x y w h
+                          [i, x, y, w, h] = map read $ getAllTextMatches stringResult :: [Int]
+                      in Day3.Rectangle i x y w h
   print $ Day3.solution1 rs
   print $ Day3.solution2 rs
 

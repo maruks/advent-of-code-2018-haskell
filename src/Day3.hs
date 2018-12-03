@@ -43,4 +43,4 @@ allOverlaps points (x:xs) = let newPoints = List.concatMap (overlap x) xs
                                 in allOverlaps newSet xs
 
 solution2 :: [Rectangle] -> Int
-solution2 rs = Maybe.fromMaybe (-1) $ i <$> List.find (\e -> List.all (null . overlap e) (List.delete e rs)) rs
+solution2 rs = Maybe.fromMaybe (-1) $ i <$> List.find (\e -> List.all (null . overlap e) $ List.delete e rs) rs
