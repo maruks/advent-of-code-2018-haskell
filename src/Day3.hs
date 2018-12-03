@@ -37,7 +37,7 @@ overlap' (Rect x1p1 y1p1 x2p1 y2p1) (Rect x1p2 y1p2 x2p2 y2p2) = do
   y <- pointsRange y1p1 y2p1 y1p2 y2p2
   return (x, y)
 
-overlap :: Rectangle -> Rectangle -> [(Int, Int)]
+overlap :: Rectangle -> Rectangle -> [Point]
 overlap (Rectangle _ x1 y1 w1 h1) (Rectangle _ x2 y2 w2 h2) =
   let x1p = x1 + w1 - 1
       y1p = y1 + h1 - 1
