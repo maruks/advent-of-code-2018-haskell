@@ -28,6 +28,7 @@ library:
   - containers
   - text
   - bifunctors
+  - attoparsec
 
 executables:
   advent-of-code-exe:
