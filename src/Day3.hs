@@ -32,10 +32,8 @@ pointsRange :: Int -> Int -> Int -> Int -> [Int]
 pointsRange s1 e1 s2 e2 = [max s1 s2 .. min e1 e2]
 
 overlap' :: Rect -> Rect -> [Point]
-overlap' (Rect x1p1 y1p1 x2p1 y2p1) (Rect x1p2 y1p2 x2p2 y2p2) = do
-  x <- pointsRange x1p1 x2p1 x1p2 x2p2
-  y <- pointsRange y1p1 y2p1 y1p2 y2p2
-  return (x, y)
+overlap' (Rect x1p1 y1p1 x2p1 y2p1) (Rect x1p2 y1p2 x2p2 y2p2) =
+  (,) <$> pointsRange x1p1 x2p1 x1p2 x2p2 <*> pointsRange y1p1 y2p1 y1p2 y2p2
 
 overlap :: Rectangle -> Rectangle -> [Point]
 overlap (Rectangle _ x1 y1 w1 h1) (Rectangle _ x2 y2 w2 h2) =
