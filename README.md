@@ -5,4 +5,4 @@
 
     stack build
     stack test
-    stack stack exec advent-of-code-exe
+    stack exec advent-of-code-exe
