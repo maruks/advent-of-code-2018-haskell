@@ -1,0 +1,56 @@
+name:                advent-of-code
+version:             0.1.0.0
+github:              "maruks/advent-of-code"
+license:             BSD3
+author:              "Maris Orbidans"
+maintainer:          "maris.orbidans@gmail.com"
+copyright:           "2018 Maris Orbidans"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+# Metadata used when publishing your package
+# synopsis:            Advent of Code 2018
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/maruks/advent-of-code-2018-haskell#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+
+library:
+  source-dirs: src
+  dependencies:
+  - containers
+  - text
+  - bifunctors
+
+executables:
+  advent-of-code-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - advent-of-code
+
+tests:
+  advent-of-code-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - advent-of-code
+    - containers
+    - text
+    - hspec
+    - QuickCheck
