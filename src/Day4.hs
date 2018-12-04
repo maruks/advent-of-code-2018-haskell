@@ -62,7 +62,7 @@ guardStats (x:xs) guard maybeMinuteFellAsleep acc =
     BeginShift _ newGuard -> guardStats xs newGuard Nothing acc
     FallAsleep _ minute -> guardStats xs guard (Just minute) acc
     WakeUp _ minute -> guardStats xs guard Nothing newAcc
-      where newAcc = Map.insertWith (++) guard [Maybe.fromJust maybeMinuteFellAsleep .. minute - 1] acc
+      where newAcc = Map.insertWith (++) guard [fromJust maybeMinuteFellAsleep .. minute - 1] acc
 
 sortLog :: [Log] -> [Log]
 sortLog = sortOn timestamp
