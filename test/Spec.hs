@@ -31,8 +31,8 @@ specs =
       describe "day 4" $ do
         it "returns id of the most sleepy guard multiplied by number of minute" $ do
           Day4.solution1 [BeginShift 1 3, FallAsleep 2 10, WakeUp 3 30,
-                          BeginShift 4 2, FallAsleep 5 10, WakeUp 6 10,
-                          BeginShift 7 3, FallAsleep 8 20, WakeUp 9 21] `shouldBe` 60 -- 3 * 20
+                          BeginShift 4 2, FallAsleep 5 10, WakeUp 6 50,
+                          BeginShift 7 3, FallAsleep 8 20, WakeUp 9 21] `shouldBe` 20 -- 2 * 20
         it "returns id of the most frequently asleep guard multiplied by number of minute" $ do
           Day4.solution2 [BeginShift 1 3, FallAsleep 2 18, WakeUp 3 25,
                           BeginShift 4 2, FallAsleep 5 10, WakeUp 6 50,
