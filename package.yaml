@@ -29,6 +29,7 @@ library:
   - bifunctors
   - text
   - parsec
+  - regex-pcre
 
 executables:
   advent-of-code-exe:
