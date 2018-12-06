@@ -4,6 +4,7 @@ import qualified Day1
 import qualified Day2
 import qualified Day3
 import qualified Day4
+import qualified Day5
 
 import Text.Regex.PCRE
 
@@ -54,9 +55,16 @@ day4 = do
   print $ Day4.solution1 rs
   print $ Day4.solution2 rs
 
+day5 :: IO ()
+day5 = do
+  file <- readFile "./test/day5.txt"
+  print $ Day5.solution1 file
+  print $ Day5.solution2 file
+
 main :: IO ()
 main = do
   day1
   day2
   day3
   day4
+  day5

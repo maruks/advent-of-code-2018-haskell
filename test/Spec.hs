@@ -6,6 +6,7 @@ import qualified Day2
 import qualified Day3
 import qualified Day4
 import Day4 (Log(..))
+import qualified Day5
 
 main :: IO ()
 main = hspecWith defaultConfig { configFastFail = True} specs
@@ -14,9 +15,9 @@ specs :: Spec
 specs =
     describe "Advent of Code" $ do
       describe "day 1" $ do
-        it "returns sum" $ do
+        it "returns resulting frequency" $ do
           Day1.solution1 [1 , 2 , -1] `shouldBe` 2
-        it "returns first duplicate accumulator value" $ do
+        it "returns first duplicate frequency" $ do
           Day1.solution2 [ 3, 3, 4, -2, -4] `shouldBe` 10
       describe "day 2" $ do
         it "returns checksum" $ do
@@ -37,3 +38,8 @@ specs =
           Day4.solution2 [BeginShift 1 3, FallAsleep 2 18, WakeUp 3 25,
                           BeginShift 4 2, FallAsleep 5 10, WakeUp 6 50,
                           BeginShift 7 3, FallAsleep 8 20, WakeUp 9 21] `shouldBe` 60 -- 3 * 20
+      describe "day 5" $ do
+        it "returns number of elements left after alchemical reduction" $ do
+          Day5.solution1 "dabAcCaCBAcCcaDA" `shouldBe` 10 -- dabCBAcaDA
+        it "returns number of elements left after alchemical reduction with one element type removed" $ do
+          Day5.solution2 "dabAcCaCBAcCcaDA" `shouldBe` 4 -- daDA
