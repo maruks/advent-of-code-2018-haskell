@@ -7,6 +7,7 @@ import qualified Day3
 import qualified Day4
 import Day4 (Log(..))
 import qualified Day5
+import qualified Day6
 
 main :: IO ()
 main = hspecWith defaultConfig { configFastFail = True} specs
@@ -43,3 +44,8 @@ specs =
           Day5.solution1 "dabAcCaCBAcCcaDA" `shouldBe` 10 -- dabCBAcaDA
         it "returns number of elements left after alchemical reduction with one element type removed" $ do
           Day5.solution2 "dabAcCaCBAcCcaDA" `shouldBe` 4 -- daDA
+      describe "day 6" $ do
+        it "returns size or the largest finite area" $ do
+          Day6.solution1 [(1, 1),(1, 6),(8, 3),(3, 4),(5, 5),(8, 9)] `shouldBe` 17 -- (5,5)
+        it "returns size of region near as many coordinates as possible" $ do
+          Day6.solution2 [(1, 1),(1, 6),(8, 3),(3, 4),(5, 5),(8, 9)] 32 `shouldBe` 16

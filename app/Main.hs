@@ -5,6 +5,7 @@ import qualified Day2
 import qualified Day3
 import qualified Day4
 import qualified Day5
+import qualified Day6
 
 import Text.Regex.PCRE
 
@@ -61,6 +62,17 @@ day5 = do
   print $ Day5.solution1 file
   print $ Day5.solution2 file
 
+day6 :: IO ()
+day6 = do
+  file <- readFile "./test/day6.txt"
+  let rs = map parseLine $ lines file where
+        parseLine :: String -> (Int, Int)
+        parseLine s = let result = s =~ "\\d+" :: AllTextMatches [] String
+                          [x, y] = map read $ getAllTextMatches result :: [Int]
+                      in (x,y)
+  print $ Day6.solution1 rs
+  print $ Day6.solution2 rs 10000
+
 main :: IO ()
 main = do
   day1
@@ -68,3 +80,4 @@ main = do
   day3
   day4
   day5
+  day6
