@@ -8,6 +8,7 @@ import qualified Day4
 import Day4 (Log(..))
 import qualified Day5
 import qualified Day6
+import qualified Day7
 
 main :: IO ()
 main = hspecWith defaultConfig { configFastFail = True} specs
@@ -49,3 +50,8 @@ specs =
           Day6.solution1 [(1, 1),(1, 6),(8, 3),(3, 4),(5, 5),(8, 9)] `shouldBe` 17 -- (5,5)
         it "returns size of region near as many coordinates as possible" $ do
           Day6.solution2 [(1, 1),(1, 6),(8, 3),(3, 4),(5, 5),(8, 9)] 32 `shouldBe` 16
+      describe "day 7" $ do
+        it "returns steps in correct order" $ do
+          Day7.solution1 [('C', 'A'), ('C','F'),('A','B'),('A','D'),('B','E'),('D','E'),('F','E')] `shouldBe` "CABDFE"
+        it "returns how long it takes to finish all steps" $ do
+          Day7.solution2 [('C', 'A'), ('C','F'),('A','B'),('A','D'),('B','E'),('D','E'),('F','E')] 2 0 `shouldBe` 15

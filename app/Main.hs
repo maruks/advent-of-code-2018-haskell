@@ -6,6 +6,7 @@ import qualified Day3
 import qualified Day4
 import qualified Day5
 import qualified Day6
+import qualified Day7
 
 import Text.Regex.PCRE
 
@@ -73,6 +74,17 @@ day6 = do
   print $ Day6.solution1 rs
   print $ Day6.solution2 rs 10000
 
+day7 :: IO ()
+day7 = do
+  file <- readFile "./test/day7.txt"
+  let rs = map parseLine $ lines file where
+        parseLine :: String -> (Char, Char)
+        parseLine s = let result = s =~ "Step ([A-Z]) must be finished before step ([A-Z])" :: AllTextSubmatches [] String
+                          [_, a, b] = getAllTextSubmatches result :: [String]
+                      in (head a, head b)
+  print $ Day7.solution1 rs
+  print $ Day7.solution2 rs 5 60
+
 main :: IO ()
 main = do
   day1
@@ -81,3 +93,4 @@ main = do
   day4
   day5
   day6
+  day7
