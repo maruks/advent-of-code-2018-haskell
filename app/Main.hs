@@ -8,6 +8,7 @@ import qualified Day5
 import qualified Day6
 import qualified Day7
 import qualified Day8
+import qualified Day9
 
 import Text.Regex.PCRE
 
@@ -68,10 +69,10 @@ day6 :: IO ()
 day6 = do
   file <- readFile "./test/day6.txt"
   let rs = map parseLine $ lines file where
-        parseLine :: String -> (Int, Int)
-        parseLine s = let result = s =~ "\\d+" :: AllTextMatches [] String
-                          [x, y] = map read $ getAllTextMatches result :: [Int]
-                      in (x,y)
+      parseLine :: String -> (Int, Int)
+      parseLine s = let result = s =~ "\\d+" :: AllTextMatches [] String
+                        [x, y] = map read $ getAllTextMatches result :: [Int]
+                    in (x,y)
   print $ Day6.solution1 rs
   print $ Day6.solution2 rs 10000
 
@@ -79,10 +80,10 @@ day7 :: IO ()
 day7 = do
   file <- readFile "./test/day7.txt"
   let rs = map parseLine $ lines file where
-        parseLine :: String -> (Char, Char)
-        parseLine s = let result = s =~ "Step ([A-Z]) must be finished before step ([A-Z])" :: AllTextSubmatches [] String
-                          [_, a, b] = getAllTextSubmatches result :: [String]
-                      in (head a, head b)
+      parseLine :: String -> (Char, Char)
+      parseLine s = let result = s =~ "Step ([A-Z]) must be finished before step ([A-Z])" :: AllTextSubmatches [] String
+                        [_, a, b] = getAllTextSubmatches result :: [String]
+                    in (head a, head b)
   print $ Day7.solution1 rs
   print $ Day7.solution2 rs 5 60
 
@@ -93,6 +94,12 @@ day8 = do
   print $ Day8.solution1 rs
   print $ Day8.solution2 rs
 
+day9 :: IO ()
+day9 = do
+  s <- readFile "./test/day9.txt"
+  let result = s =~ "\\d+" :: AllTextMatches [] String
+      [x, y] = map read $ getAllTextMatches result :: [Int]
+  print $ Day9.solution1 x y
 
 main :: IO ()
 main = do
@@ -104,3 +111,4 @@ main = do
   day6
   day7
   day8
+  day9

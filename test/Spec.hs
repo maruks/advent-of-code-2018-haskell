@@ -10,6 +10,7 @@ import qualified Day5
 import qualified Day6
 import qualified Day7
 import qualified Day8
+import qualified Day9
 
 main :: IO ()
 main = hspecWith defaultConfig { configFastFail = True} specs
@@ -61,3 +62,11 @@ specs =
           Day8.solution1 [2, 3, 0, 3, 10, 11, 12, 1, 1, 0, 1, 99, 2, 1, 1, 2] `shouldBe` 138
         it "returns value of the tree node" $ do
           Day8.solution2 [2, 3, 0, 3, 10, 11, 12, 1, 1, 0, 1, 99, 2, 1, 1, 2] `shouldBe` 66
+      describe "day 9" $ do
+        it "returns the highest score" $ do
+          Day9.solution1 9 25 `shouldBe` 32
+          Day9.solution1 10 1618 `shouldBe` 8317
+          Day9.solution1 13 7999 `shouldBe` 146373
+          Day9.solution1 17 1104 `shouldBe` 2764
+          Day9.solution1 21 6111 `shouldBe` 54718
+          Day9.solution1 30 5807 `shouldBe` 37305

@@ -10,7 +10,7 @@ import Data.Char as Char
 import Data.Set as Set
 
 solution1 :: [Int] -> Int
-solution1 = List.sum . fst . metadata
+solution1 = sum . fst . metadata
 
 metadata :: [Int] -> ([Int], Int)
 metadata (children:meta:xs)
