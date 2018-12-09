@@ -7,6 +7,7 @@ import qualified Day4
 import qualified Day5
 import qualified Day6
 import qualified Day7
+import qualified Day8
 
 import Text.Regex.PCRE
 
@@ -85,6 +86,14 @@ day7 = do
   print $ Day7.solution1 rs
   print $ Day7.solution2 rs 5 60
 
+day8 :: IO ()
+day8 = do
+  file <- readFile "./test/day8.txt"
+  let rs = map read $ words file :: [Int]
+  print $ Day8.solution1 rs
+  print $ Day8.solution2 rs
+
+
 main :: IO ()
 main = do
   day1
@@ -94,3 +103,4 @@ main = do
   day5
   day6
   day7
+  day8

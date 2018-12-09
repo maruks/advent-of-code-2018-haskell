@@ -9,6 +9,7 @@ import Day4 (Log(..))
 import qualified Day5
 import qualified Day6
 import qualified Day7
+import qualified Day8
 
 main :: IO ()
 main = hspecWith defaultConfig { configFastFail = True} specs
@@ -55,3 +56,8 @@ specs =
           Day7.solution1 [('C', 'A'), ('C','F'),('A','B'),('A','D'),('B','E'),('D','E'),('F','E')] `shouldBe` "CABDFE"
         it "returns how long it takes to finish all steps" $ do
           Day7.solution2 [('C', 'A'), ('C','F'),('A','B'),('A','D'),('B','E'),('D','E'),('F','E')] 2 0 `shouldBe` 15
+      describe "day 8" $ do
+        it "returns the sum of all metadata" $ do
+          Day8.solution1 [2, 3, 0, 3, 10, 11, 12, 1, 1, 0, 1, 99, 2, 1, 1, 2] `shouldBe` 138
+        it "returns value of the tree node" $ do
+          Day8.solution2 [2, 3, 0, 3, 10, 11, 12, 1, 1, 0, 1, 99, 2, 1, 1, 2] `shouldBe` 66
