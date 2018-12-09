@@ -1,8 +1,8 @@
 module Day9
   ( solution1
+  , solution2
   ) where
 
---  , solution2
 import Data.List as List
 import Data.Map.Strict as Map
 import Data.Maybe as Maybe
@@ -12,6 +12,9 @@ import Data.Sequence as Seq
 
 solution1 :: Int -> Int -> Int
 solution1 players marbles = play [1 .. marbles] (0, Seq.fromList [0]) players Map.empty
+
+solution2 :: Int -> Int -> Int
+solution2 players marbles = solution1 players $ 100 * marbles
 
 placeMarble :: (Int, Seq Int) -> Int -> ((Int, Seq Int), Int)
 placeMarble (current, xs) marble

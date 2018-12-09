@@ -100,6 +100,7 @@ day9 = do
   let result = s =~ "\\d+" :: AllTextMatches [] String
       [x, y] = map read $ getAllTextMatches result :: [Int]
   print $ Day9.solution1 x y
+  print $ Day9.solution2 x y
 
 main :: IO ()
 main = do
