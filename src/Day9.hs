@@ -6,8 +6,6 @@ module Day9
 import Data.List as List
 import Data.Map.Strict as Map
 import Data.Maybe as Maybe
-import Data.Char as Char
-import Data.Set as Set
 import Data.Sequence as Seq
 
 solution1 :: Int -> Int -> Int
