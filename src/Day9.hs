@@ -8,24 +8,22 @@ import Data.Map.Strict as Map
 import Data.Maybe as Maybe
 import Data.Char as Char
 import Data.Set as Set
-
---import Debug.Trace
+import Data.Sequence as Seq
 
 solution1 :: Int -> Int -> Int
-solution1 players marbles = play [1 .. marbles] (0, [0]) players Map.empty
+solution1 players marbles = play [1 .. marbles] (0, Seq.fromList [0]) players Map.empty
 
-placeMarble :: (Int, [Int]) -> Int -> ((Int, [Int]), Int)
+placeMarble :: (Int, Seq Int) -> Int -> ((Int, Seq Int), Int)
 placeMarble (current, xs) marble
   | marble `rem` 23 == 0 =
-    let remIdx = (current - 7) `mod` length xs
-        removed = xs !! remIdx
-    in ((remIdx, List.delete removed xs), marble + removed)
+    let remIdx = (current - 7) `mod` Seq.length xs
+        removed = Maybe.fromJust $ xs Seq.!? remIdx
+    in ((remIdx, Seq.deleteAt remIdx xs), marble + removed)
   | otherwise =
-    let splitIdx = (current + 1) `rem` length xs
-        (xs1, xs2) = List.splitAt (splitIdx + 1) xs
-    in ((splitIdx + 1, xs1 ++ marble : xs2), 0)
+    let insertIdx = 1 + (current + 1) `rem` Seq.length xs
+    in ((insertIdx, Seq.insertAt insertIdx marble xs), 0)
 
-play :: [Int] -> (Int, [Int]) -> Int -> Map Int Int -> Int
+play :: [Int] -> (Int, Seq Int) -> Int -> Map Int Int -> Int
 play [] _ _ scores = List.maximum $ Map.elems scores
 play (x:xs) m players scores =
   let (marbles, score) = placeMarble m x
