@@ -1,6 +1,9 @@
 import Test.Hspec
 import Test.Hspec.Runner (configFastFail, defaultConfig, hspecWith)
 
+import Data.Set as Set
+import Data.List as List
+
 import qualified Day1
 import qualified Day2
 import qualified Day3
@@ -11,6 +14,7 @@ import qualified Day6
 import qualified Day7
 import qualified Day8
 import qualified Day9
+import qualified Day10
 
 main :: IO ()
 main = hspecWith defaultConfig { configFastFail = True} specs
@@ -70,3 +74,8 @@ specs =
           Day9.solution1 17 1104 `shouldBe` 2764
           Day9.solution1 21 6111 `shouldBe` 54718
           Day9.solution1 30 5807 `shouldBe` 37305
+      describe "day 10" $ do
+        it "returns points when they cover the smallest area" $ do
+          Day10.solution1 [((1,1),(1,1)), ((-1,1),(5,1)), ((1,-1),(1,5)), ((-1,-1),(5,5))] `shouldBe` Set.fromList [(3,3)]
+        it "returns time it would take for message to appear" $ do
+          Day10.solution2 [((1,1),(1,1)), ((-1,1),(5,1)), ((1,-1),(1,5)), ((-1,-1),(5,5))] `shouldBe` 2

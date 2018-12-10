@@ -9,6 +9,7 @@ import qualified Day6
 import qualified Day7
 import qualified Day8
 import qualified Day9
+import qualified Day10
 
 import Text.Regex.PCRE
 
@@ -102,6 +103,20 @@ day9 = do
   print $ Day9.solution1 x y
   print $ Day9.solution2 x y
 
+day10 :: IO ()
+day10 = do
+  file <- readFile "./test/day10.txt"
+  let rs = map parseLine $ lines file
+      pts = Day10.solution1 rs
+      img = Day10.renderMessage pts 80 13 where
+      parseLine :: String -> ((Int, Int), (Int, Int))
+      parseLine s = let result = s =~ "-?\\d+" :: AllTextMatches [] String
+                        [x, y, vx, vy] = map read $ getAllTextMatches result :: [Int]
+                    in ((vx,vy), (x,y))
+  putStr img
+  print $ Day10.solution2 rs
+
+
 main :: IO ()
 main = do
   day1
@@ -113,3 +128,4 @@ main = do
   day7
   day8
   day9
+  day10
