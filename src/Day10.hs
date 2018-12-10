@@ -40,4 +40,4 @@ renderMessage pts w h = let ps = flip (,) <$> [0..h] <*> [0..w]
                             minY = List.minimum $ List.map snd points
                             scaled = Set.map (\(x,y) -> (8 + x - minX , 2 + y - minY)) pts
                         in
-                          List.map (\p@(x,y) -> if Set.member p scaled then '#' else if x == w then '\n' else '.') ps
+                          List.map (\p@(x,y) -> if Set.member p scaled then '\x2593' else if x == w then '\n' else '\x2591') ps
