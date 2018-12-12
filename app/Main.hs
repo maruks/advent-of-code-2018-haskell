@@ -10,6 +10,7 @@ import qualified Day7
 import qualified Day8
 import qualified Day9
 import qualified Day10
+import qualified Day11
 
 import Text.Regex.PCRE
 
@@ -116,6 +117,10 @@ day10 = do
   putStr img
   print $ Day10.solution2 rs
 
+day11 :: IO ()
+day11 = do
+  print $ Day11.solution1 6548
+  print $ Day11.solution2 6548
 
 main :: IO ()
 main = do
@@ -129,3 +134,4 @@ main = do
   day8
   day9
   day10
+  day11

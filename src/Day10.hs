@@ -9,8 +9,6 @@ import Data.Map.Strict as Map
 import Data.Set as Set
 import Data.Monoid as Monoid
 
-import Debug.Trace
-
 type Point = (Int, Int)
 type Velocity = (Int, Int)
 
@@ -28,7 +26,7 @@ solution points area time = let nextPoints = List.map (\(v, p) -> (v, v <> p)) p
                                 pts = List.map snd nextPoints
                                 xs = List.map fst pts
                                 ys = List.map snd pts
-                                nextArea = (List.maximum xs - List.minimum xs) * (List.maximum ys - List.minimum ys)  --totalDistance pts
+                                nextArea = (List.maximum xs - List.minimum xs) * (List.maximum ys - List.minimum ys)
                             in if nextArea >= area
                                then (Set.fromList $ List.map snd points, time)
                                else solution nextPoints nextArea (time + 1)

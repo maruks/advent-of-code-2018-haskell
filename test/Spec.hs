@@ -2,6 +2,7 @@ import Test.Hspec
 import Test.Hspec.Runner (configFastFail, defaultConfig, hspecWith)
 
 import Data.Set as Set
+import Data.Map.Strict as Map
 import Data.List as List
 
 import qualified Day1
@@ -15,6 +16,7 @@ import qualified Day7
 import qualified Day8
 import qualified Day9
 import qualified Day10
+import qualified Day11
 
 main :: IO ()
 main = hspecWith defaultConfig { configFastFail = True} specs
@@ -79,3 +81,15 @@ specs =
           Day10.solution1 [((1,1),(1,1)), ((-1,1),(5,1)), ((1,-1),(1,5)), ((-1,-1),(5,5))] `shouldBe` Set.fromList [(3,3)]
         it "returns time it would take for message to appear" $ do
           Day10.solution2 [((1,1),(1,1)), ((-1,1),(5,1)), ((1,-1),(1,5)), ((-1,-1),(5,5))] `shouldBe` 2
+      describe "day 11" $ do
+        it "grid contains cells with correct power level" $ do
+          Day11.grid 8 ! (3,5) `shouldBe` 4
+          Day11.grid 57 ! (122,79) `shouldBe` (-5)
+          Day11.grid 39 ! (217,196) `shouldBe` 0
+          Day11.grid 71 ! (101,153) `shouldBe` 4
+        it "returns coordinates of square with the highest power level" $ do
+          Day11.solution1 18 `shouldBe` (33,45)
+          Day11.solution1 42 `shouldBe` (21,61)
+        it "returns the largest square" $ do
+          Day11.solution2 18 `shouldBe` (90,269,16)
+          Day11.solution2 42 `shouldBe` (232,251,12)
