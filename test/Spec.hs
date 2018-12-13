@@ -17,6 +17,7 @@ import qualified Day8
 import qualified Day9
 import qualified Day10
 import qualified Day11
+import qualified Day12
 
 main :: IO ()
 main = hspecWith defaultConfig { configFastFail = True} specs
@@ -93,3 +94,7 @@ specs =
         it "returns the largest square" $ do
           Day11.solution2 18 `shouldBe` (90,269,16)
           Day11.solution2 42 `shouldBe` (232,251,12)
+      describe "day 12" $ do
+        it "grow plants returns plant configuration after specified number of iterations" $ do
+          Day12.growPlants [False,False,False,True,True,False,False,False] 1 Map.empty `shouldBe` [False,False,False,False,False,False,False,False,False,False]
+          Day12.growPlants [False,False,False,True,True,False,False,False] 1 (Map.fromList [((False,False,False,True,True),True),((True,True,False,False,False),True)]) `shouldBe` [False,False,False,True,False,False,True,False,False,False]

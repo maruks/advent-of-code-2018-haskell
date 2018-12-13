@@ -1,5 +1,8 @@
 module Main where
 
+import qualified Data.Map.Strict as Map
+import Data.List as List
+
 import qualified Day1
 import qualified Day2
 import qualified Day3
@@ -11,6 +14,7 @@ import qualified Day8
 import qualified Day9
 import qualified Day10
 import qualified Day11
+import qualified Day12
 
 import Text.Regex.PCRE
 
@@ -122,6 +126,27 @@ day11 = do
   print $ Day11.solution1 6548
   print $ Day11.solution2 6548
 
+parseDay12Input :: String -> [Bool]
+parseDay12Input s = let result = s =~ "(\\.|#)" :: AllTextMatches [] String
+                        rs = getAllTextMatches result
+                    in map (=="#") rs
+
+day12 :: IO ()
+day12 = do
+  file <- readFile "./test/day12.txt"
+  let (x:xs) = lines file
+      init = parseDay12Input x
+      ts = Map.fromList $ map (\[b1,b2,b3,b4,b5,b6] -> ((b1,b2,b3,b4,b5),b6))  $ filter (not . null) $ map parseDay12Input xs
+      gen2 = 50000000000
+      r200 = fromIntegral $ Day12.solution1 ts init 200
+      r300 = fromIntegral $ Day12.solution1 ts init 300
+      d100 = r300 - r200
+      solution2 :: Integer
+      solution2 = r300 + ((50000000000 - 300) `div` 100) * d100
+
+  print $ Day12.solution1 ts init 20
+  print $ solution2
+
 main :: IO ()
 main = do
   day1
@@ -135,3 +160,4 @@ main = do
   day9
   day10
   day11
+  day12

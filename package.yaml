@@ -26,10 +26,9 @@ library:
   source-dirs: src
   dependencies:
   - containers
-  - bifunctors
-  - text
-  - parsec
-  - regex-pcre
+  - vector
+  - primitive
+  - mtl
 
 executables:
   advent-of-code-exe:
@@ -40,6 +39,7 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
+    - containers
     - advent-of-code
     - regex-pcre
 
@@ -54,6 +54,5 @@ tests:
     dependencies:
     - advent-of-code
     - containers
-    - text
     - hspec
     - QuickCheck
