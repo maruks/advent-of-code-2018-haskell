@@ -18,6 +18,7 @@ import qualified Day9
 import qualified Day10
 import qualified Day11
 import qualified Day12
+import qualified Day13
 
 main :: IO ()
 main = hspecWith defaultConfig { configFastFail = True} specs
@@ -95,6 +96,16 @@ specs =
           Day11.solution2 18 `shouldBe` (90,269,16)
           Day11.solution2 42 `shouldBe` (232,251,12)
       describe "day 12" $ do
+        let initialState = [False,False,False,True,True,False,False,False]
         it "grow plants returns plant configuration after specified number of iterations" $ do
-          Day12.growPlants [False,False,False,True,True,False,False,False] 1 Map.empty `shouldBe` [False,False,False,False,False,False,False,False,False,False]
-          Day12.growPlants [False,False,False,True,True,False,False,False] 1 (Map.fromList [((False,False,False,True,True),True),((True,True,False,False,False),True)]) `shouldBe` [False,False,False,True,False,False,True,False,False,False]
+          Day12.growPlants initialState 1 Map.empty `shouldBe` [False,False,False,False,False,False,False,False,False,False]
+          Day12.growPlants initialState 1 (Map.fromList [((False,False,False,True,True),True),((True,True,False,False,False),True)]) `shouldBe` [False,False,False,True,False,False,True,False,False,False]
+      describe "day 13" $ do
+        it "returns location of the first crash" $ do
+          file <- readFile "./test/day13-part1-example.txt"
+          let (carts,tracks) = Day13.readInput $ lines file
+          Day13.solution1 tracks carts `shouldBe` (7,3)
+        it "returns location of the last cart" $ do
+          file <- readFile "./test/day13-part2-example.txt"
+          let (carts,tracks) = Day13.readInput $ lines file
+          Day13.solution2 tracks carts `shouldBe` (6,4)

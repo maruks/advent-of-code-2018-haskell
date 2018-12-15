@@ -15,6 +15,7 @@ import qualified Day9
 import qualified Day10
 import qualified Day11
 import qualified Day12
+import qualified Day13
 
 import Text.Regex.PCRE
 
@@ -147,6 +148,13 @@ day12 = do
   print $ Day12.solution1 ts init 20
   print $ solution2
 
+day13 :: IO ()
+day13 = do
+  file <- readFile "./test/day13.txt"
+  let (carts,tracks) = Day13.readInput $ lines file
+  print $ Day13.solution1 tracks carts
+  print $ Day13.solution2 tracks carts
+
 main :: IO ()
 main = do
   day1
@@ -161,3 +169,4 @@ main = do
   day10
   day11
   day12
+  day13
