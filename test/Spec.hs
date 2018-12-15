@@ -19,6 +19,7 @@ import qualified Day10
 import qualified Day11
 import qualified Day12
 import qualified Day13
+import qualified Day14
 
 main :: IO ()
 main = hspecWith defaultConfig { configFastFail = True} specs
@@ -109,3 +110,14 @@ specs =
           file <- readFile "./test/day13-part2-example.txt"
           let (carts,tracks) = Day13.readInput $ lines file
           Day13.solution2 tracks carts `shouldBe` (6,4)
+      describe "day 14" $ do
+        it "returns the scores of the ten recipes after the first N on the scoreboard" $ do
+          Day14.solution1 9 `shouldBe` [5,1,5,8,9,1,6,7,7,9]
+          Day14.solution1 5 `shouldBe` [0,1,2,4,5,1,5,8,9,1]
+          Day14.solution1 18 `shouldBe` [9,2,5,1,0,7,1,0,8,5]
+          Day14.solution1 2018 `shouldBe` [5,9,4,1,4,2,9,8,8,2]
+        it "returns number of recipes produced when specified score appears on the chocolate scoreboard" $ do
+          Day14.solution2 [5,9,4,1,4] `shouldBe` 2018
+          Day14.solution2 [9,2,5,1,0] `shouldBe` 18
+          Day14.solution2 [5,1,5,8,9] `shouldBe` 9
+          Day14.solution2 [0,1,2,4,5] `shouldBe` 5

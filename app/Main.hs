@@ -16,6 +16,7 @@ import qualified Day10
 import qualified Day11
 import qualified Day12
 import qualified Day13
+import qualified Day14
 
 import Text.Regex.PCRE
 
@@ -155,6 +156,11 @@ day13 = do
   print $ Day13.solution1 tracks carts
   print $ Day13.solution2 tracks carts
 
+day14 :: IO ()
+day14 = do
+  print $ Day14.solution1 503761
+  print $ Day14.solution2 [5,0,3,7,6,1]
+
 main :: IO ()
 main = do
   day1
@@ -170,3 +176,4 @@ main = do
   day11
   day12
   day13
+  day14
