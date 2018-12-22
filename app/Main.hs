@@ -17,6 +17,7 @@ import qualified Day11
 import qualified Day12
 import qualified Day13
 import qualified Day14
+import qualified Day15
 
 import Text.Regex.PCRE
 
@@ -161,19 +162,27 @@ day14 = do
   print $ Day14.solution1 503761
   print $ Day14.solution2 [5,0,3,7,6,1]
 
+day15 :: IO ()
+day15 = do
+  file <- readFile "./test/day15.txt"
+  let map = Day15.buildMap $ lines file
+  print $ Day15.solution1 map
+  print $ Day15.solution2 map
+
 main :: IO ()
 main = do
-  day1
-  day2
-  day3
-  day4
-  day5
-  day6
-  day7
-  day8
-  day9
-  day10
-  day11
-  day12
-  day13
-  day14
+  -- day1
+  -- day2
+  -- day3
+  -- day4
+  -- day5
+  -- day6
+  -- day7
+  -- day8
+  -- day9
+  -- day10
+  -- day11
+  -- day12
+  -- day13
+  -- day14
+  day15
