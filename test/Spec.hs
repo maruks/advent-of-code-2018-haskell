@@ -193,35 +193,94 @@ specs =
                                    "#.E##",
                                    "#####"]
 
+            map9 = Day15.buildMap ["#################",
+                                   "##..............#",
+                                   "##........G.....#",
+                                   "####.....G....###",
+                                   "#....##......####",
+                                   "#...............#",
+                                   "##........GG....#",
+                                   "##.........E..#.#",
+                                   "#####.###...#####",
+                                   "#################"]
+
+            map_1 =   ["#########",
+                       "#G..G..G#",
+                       "#.......#",
+                       "#.......#",
+                       "#G..E..G#",
+                       "#.......#",
+                       "#.......#",
+                       "#G..G..G#",
+                       "#########"]
+
+            map_2 =  ["#########",
+                      "#.G...G.#",
+                      "#...G...#",
+                      "#...E..G#",
+                      "#.G.....#",
+                      "#.......#",
+                      "#G..G..G#",
+                      "#.......#",
+                      "#########"]
+
+            map_3 =  ["#########",
+                      "#..G.G..#",
+                      "#...G...#",
+                      "#.G.E.G.#",
+                      "#.......#",
+                      "#G..G..G#",
+                      "#.......#",
+                      "#.......#",
+                      "#########"]
+
+            map_4 =  ["#########",
+                      "#.......#",
+                      "#..GGG..#",
+                      "#..GEG..#",
+                      "#G..G...#",
+                      "#......G#",
+                      "#.......#",
+                      "#.......#",
+                      "#########"]
+
         it "returns points to targets" $ do
-          let targets = [Point {x = 3, y = 1},
-                         Point {x = 5, y = 1},
-                         Point {x = 2, y = 2},
-                         Point {x = 5, y = 2},
-                         Point {x = 1, y = 3},
-                         Point {x = 3, y = 3}]
+          let targets = [Point 3 1, Point 5 1, Point 2 2, Point 5 2, Point 1 3, Point 3 3]
               points = Day15.pointsToTargets (Elf 200 "") (Point 1 1) map0
           List.sort points `shouldBe` targets
         it "returns shortest path to the nearest target" $ do
           let targets1 = Day15.pointsToTargets (Elf 200 "") (Point 1 1) map0
-          let targets2 = Day15.pointsToTargets (Goblin 200 "") (Point 2 3) map0
+              targets2 = Day15.pointsToTargets (Goblin 200 "") (Point 2 3) map0
           Day15.shortestPath (Point 1 1) targets1 map0 `shouldBe` [Point 2 1,Point 3 1]
           Day15.shortestPath (Point 2 3) targets2 map0 `shouldBe` [Point 2 2,Point 2 1]
         it "returns empty path if none of targets can be reached" $ do
           let targets = Day15.pointsToTargets (Goblin 200 "") (Point 5 3) map0
           Day15.shortestPath (Point 5 3) targets map0 `shouldBe` []
+        it "units move around" $ do
+          let m2 = fst $ Day15.performRound (Day15.buildMap map_1) 3
+              m3 = fst $ Day15.performRound (Day15.buildMap map_2) 3
+              m4 = fst $ Day15.performRound (Day15.buildMap map_4) 3
+          lines (Day15.printMap m2) `shouldBe` map_2
+          lines (Day15.printMap m3) `shouldBe` map_3
+          lines (Day15.printMap m4) `shouldBe` map_4
         it "returns outcome of the combat" $ do
+          file <- readFile "test/day15-example-1.txt"
+          let example1 = Day15.buildMap $ lines file
           Day15.solution1 map1 `shouldBe` 27730
           Day15.solution1 map2 `shouldBe` 36334
           Day15.solution1 map3 `shouldBe` 39514
           Day15.solution1 map4 `shouldBe` 27755
           Day15.solution1 map5 `shouldBe` 28944
           Day15.solution1 map6 `shouldBe` 18740
-      --    Day15.solution1 map7 `shouldBe` 13400
+          Day15.solution1 map7 `shouldBe` 13400
           Day15.solution1 map8 `shouldBe` 13987
+          Day15.solution1 example1 `shouldBe` 215168
         it "returns outcome of the combat with increased attack power of elves" $ do
+          file <- readFile "test/day15-example-1.txt"
+          let example1 = Day15.buildMap $ lines file
           Day15.solution2 map1 `shouldBe` 4988
           Day15.solution2 map3 `shouldBe` 31284
           Day15.solution2 map4 `shouldBe` 3478
           Day15.solution2 map5 `shouldBe` 6474
           Day15.solution2 map6 `shouldBe` 1140
+          --Day15.solution2 example1 `shouldBe` 52374

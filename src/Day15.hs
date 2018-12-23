@@ -1,7 +1,7 @@
 {-# LANGUAGE RecordWildCards, PatternSynonyms #-}
 
 module Day15
-  ( pointsToTargets, buildMap, Point(..), Unit(..), Square(..), shortestPath, solution1, solution2
+  ( pointsToTargets, buildMap, Point(..), Unit(..), Square(..), shortestPath, performRound, printMap, solution1, solution2
   ) where
 
 import Data.List as List
@@ -114,7 +114,7 @@ bfs Empty targets _ distanceMap (Just stopDistance) terrain = let targetPoint = 
 bfs (queue :|> (point,distance)) targets visited distanceMap stopAfter terrain
   | distance > Maybe.fromMaybe (maxBound :: Int) stopAfter = let stopDistance = Maybe.fromJust stopAfter
                                                                  targetPoint = List.minimum $ Set.toList $ Set.intersection targets $ distanceMap ! stopDistance
-                                                             in List.reverse $ findPath targetPoint  stopDistance distanceMap terrain
+                                                             in List.reverse $ findPath targetPoint stopDistance distanceMap terrain
   | otherwise = let adj = adjacentOpenSquares terrain point
                     enqueue = List.sort $ List.filter (\p -> not $ Set.member p visited) adj
                     nextVisited = List.foldl (flip Set.insert) visited enqueue
@@ -185,16 +185,18 @@ applyTurns ((point, unit, unitId) : xs) moved terrain attackPower
                   rs -> let target = selectTarget rs terrain
                         in applyTurns xs False (attackUnit target terrain attackPower) attackPower
 
+performRound :: Terrain -> Int -> (Terrain, Bool)
+performRound terrain attackPower = let turns = allUnits terrain
+                                   in applyTurns turns False terrain attackPower
+
 finishRounds :: Terrain -> Int -> Int -> Int
-finishRounds terrain rounds attackPower = let turns = allUnits terrain
-                                              (nextTerrain, stop) = applyTurns turns False terrain attackPower
-                              in if stop
-                                 then totalHitPoints nextTerrain * rounds
-                                 else finishRounds nextTerrain (rounds + 1) attackPower
+finishRounds terrain rounds attackPower = let (nextTerrain, stop) = performRound terrain attackPower
+                                          in if stop
+                                             then totalHitPoints nextTerrain * rounds
+                                             else finishRounds nextTerrain (rounds + 1) attackPower
 
 tryAttackPower :: Int -> Int -> Int -> Terrain -> Maybe Int
-tryAttackPower attackPower elves rounds terrain = let turns = allUnits terrain
-                                                      (nextTerrain, stop) = applyTurns turns False terrain attackPower
+tryAttackPower attackPower elves rounds terrain = let (nextTerrain, stop) = performRound terrain attackPower
                                                       allElvesAlive = numberOfElves nextTerrain == elves
                                                   in
                                                     if not allElvesAlive
@@ -225,20 +227,23 @@ units = Map.filter (\v -> case v of
                                Warrior _ -> True
                                _ -> False)
 
-printMap :: [Point] -> Int -> Terrain -> String
-printMap [] _ _ = []
-printMap (p@Point{..} : xs) prevY terrain = let
+printMap' :: [Point] -> Int -> Terrain -> String
+printMap' [] _ _ = []
+printMap' (p@Point{..} : xs) prevY terrain = let
                                       c = case terrain ! p of
                                                Warrior (Elf _ _) -> 'E'
                                                Warrior (Goblin _ _) -> 'G'
                                                Open -> '.'
                                                Wall -> '#'
                                      in if y > prevY
-                                           then '\n' : c : printMap xs y terrain
-                                           else c : printMap xs y terrain
+                                           then '\n' : c : printMap' xs y terrain
+                                           else c : printMap' xs y terrain
+
+printMap :: Terrain -> String
+printMap terrain = printMap' (Map.keys terrain) 0 terrain
 
 pm :: Terrain -> IO ()
-pm t = putStrLn $ printMap (Map.keys t) 0 t
+pm = putStrLn . printMap
 
 
 map1 = buildMap ["################################",
@@ -306,3 +311,15 @@ map2 = Day15.buildMap ["################################",
                        "#############....##.############",
                        "################.#..############",
                        "################################"]
+
+
+map9 = Day15.buildMap ["#################",
+                       "##..............#",
+                       "##........G.....#",
+                       "####.....G....###",
+                       "#....##......####",
+                       "#...............#",
+                       "##........GG....#",
+                       "##.........E..#.#",
+                       "#####.###...#####",
+                       "#################"]
