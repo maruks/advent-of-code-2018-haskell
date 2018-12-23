@@ -180,6 +180,18 @@ specs =
                                    "#.....G.#",
                                    "#########"]
 
+            map7 = Day15.buildMap ["####",
+                                   "##E#",
+                                   "#GG#",
+                                   "####"]
+
+            map8 = Day15.buildMap ["#####",
+                                   "#GG##",
+                                   "#.###",
+                                   "#..E#",
+                                   "#.#G#",
+                                   "#.E##",
+                                   "#####"]
 
         it "returns points to targets" $ do
           let targets = [Point {x = 3, y = 1},
@@ -188,15 +200,15 @@ specs =
                          Point {x = 5, y = 2},
                          Point {x = 1, y = 3},
                          Point {x = 3, y = 3}]
-              points = Day15.pointsToTargets (Elf 200) (Point 1 1) map0
+              points = Day15.pointsToTargets (Elf 200 "") (Point 1 1) map0
           List.sort points `shouldBe` targets
         it "returns shortest path to the nearest target" $ do
-          let targets1 = Day15.pointsToTargets (Elf 200) (Point 1 1) map0
-          let targets2 = Day15.pointsToTargets (Goblin 200) (Point 2 3) map0
+          let targets1 = Day15.pointsToTargets (Elf 200 "") (Point 1 1) map0
+          let targets2 = Day15.pointsToTargets (Goblin 200 "") (Point 2 3) map0
           Day15.shortestPath (Point 1 1) targets1 map0 `shouldBe` [Point 2 1,Point 3 1]
           Day15.shortestPath (Point 2 3) targets2 map0 `shouldBe` [Point 2 2,Point 2 1]
         it "returns empty path if none of targets can be reached" $ do
-          let targets = Day15.pointsToTargets (Goblin 200) (Point 5 3) map0
+          let targets = Day15.pointsToTargets (Goblin 200 "") (Point 5 3) map0
           Day15.shortestPath (Point 5 3) targets map0 `shouldBe` []
         it "returns outcome of the combat" $ do
           Day15.solution1 map1 `shouldBe` 27730
@@ -205,6 +217,8 @@ specs =
           Day15.solution1 map4 `shouldBe` 27755
           Day15.solution1 map5 `shouldBe` 28944
           Day15.solution1 map6 `shouldBe` 18740
+      --    Day15.solution1 map7 `shouldBe` 13400
+          Day15.solution1 map8 `shouldBe` 13987
         it "returns outcome of the combat with increased attack power of elves" $ do
           Day15.solution2 map1 `shouldBe` 4988
           Day15.solution2 map3 `shouldBe` 31284

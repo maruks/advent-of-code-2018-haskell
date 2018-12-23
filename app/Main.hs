@@ -164,7 +164,7 @@ day14 = do
 
 day15 :: IO ()
 day15 = do
-  file <- readFile "./test/day15.txt"
+  file <- readFile "./test/day15-2.txt"
   let map = Day15.buildMap $ lines file
   print $ Day15.solution1 map
   print $ Day15.solution2 map

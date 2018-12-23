@@ -18,7 +18,7 @@ data Point = Point {x :: Int,
 instance Ord Point where
   compare Point{x = x1, y = y1} Point{x = x2, y = y2} = compare (y1, x1) (y2, x2)
 
-data Unit = Elf Int | Goblin Int deriving (Show, Eq)
+data Unit = Elf Int String | Goblin Int String deriving (Show, Eq)
 
 data Square = Open | Wall | Warrior Unit deriving (Show, Eq)
 
@@ -45,19 +45,23 @@ buildMap' ((c:cs):ys) x y result =
     point = Point x y
     square '.' = Open
     square '#' = Wall
-    square 'E'= Warrior $ Elf 200
-    square 'G'= Warrior $ Goblin 200
+    square 'E'= Warrior $ Elf 200 (show x ++ "-" ++ show y)
+    square 'G'= Warrior $ Goblin 200 (show x ++ "-" ++ show y)
 
 buildMap :: [String] -> Terrain
 buildMap xs = buildMap' xs 0 0 Map.empty
 
 isElf :: Unit -> Bool
-isElf (Elf _) = True
+isElf (Elf _ _) = True
 isElf _ = False
 
 hitPoints :: Unit -> Int
-hitPoints (Elf h) = h
-hitPoints (Goblin h) = h
+hitPoints (Elf h _) = h
+hitPoints (Goblin h _) = h
+
+unitId :: Unit -> String
+unitId (Elf _ i) = i
+unitId (Goblin _ i) = i
 
 isOpen :: Terrain -> Point -> Bool
 isOpen terrain point = case terrain ! point of
@@ -126,11 +130,13 @@ shortestPath :: Point -> [Point] -> Terrain -> [Point]
 shortestPath point targets terrain = let queue = (point,0) <| Seq.empty
                                      in bfs queue (Set.fromList targets) (Set.fromList [point]) (Map.fromList [(0, Set.fromList [point])]) Nothing terrain
 
-allUnits :: Terrain -> [(Point, Unit)]
-allUnits terrain = let results = Map.foldlWithKey (\acc point unit -> case unit of
-                                                                        Warrior u -> (point,u) : acc
+allUnits :: Terrain -> [(Point, Unit, String)]
+allUnits terrain = let results :: [(Point, Unit, String)]
+                       results = Map.foldlWithKey (\acc point unit -> case unit of
+                                                                        Warrior u@(Elf _ i) -> (point,u,i) : acc
+                                                                        Warrior u@(Goblin _ i) -> (point,u,i) : acc
                                                                         _ -> acc) [] terrain
-                   in List.sortOn fst results
+                   in List.sortOn (\(a,_,_) -> a) results
 
 moveUnit :: Point -> Point -> Terrain -> Terrain
 moveUnit from to terrain = let t = Map.insert from Open terrain
@@ -139,36 +145,42 @@ moveUnit from to terrain = let t = Map.insert from Open terrain
                                 _ -> error "not a unit"
 
 attackUnit :: (Point, Unit) -> Terrain -> Int -> Terrain
-attackUnit (point, Elf hp) terrain _ = if hp - 3 < 1
+attackUnit (point, Elf hp i) terrain _ = if hp - 3 < 1
                                      then Map.insert point Open terrain
-                                     else Map.insert point (Warrior (Elf (hp - 3))) terrain
-attackUnit (point, Goblin hp) terrain attackPower = if hp - attackPower < 1
+                                     else Map.insert point (Warrior (Elf (hp - 3) i)) terrain
+attackUnit (point, Goblin hp i) terrain attackPower = if hp - attackPower < 1
                                         then Map.insert point Open terrain
-                                        else Map.insert point (Warrior (Goblin (hp - attackPower))) terrain
+                                        else Map.insert point (Warrior (Goblin (hp - attackPower) i)) terrain
 
 totalHitPoints :: Terrain -> Int
 totalHitPoints terrain = List.sum $ List.map (\e -> case e of
-                                                      Warrior (Elf h) -> h
-                                                      Warrior (Goblin h) -> h
+                                                      Warrior (Elf h _) -> h
+                                                      Warrior (Goblin h _) -> h
                                                       _ -> 0) $ Map.elems terrain
 
 numberOfElves :: Terrain -> Int
 numberOfElves terrain = List.sum $ List.map (\e -> case e of
-                                                      Warrior (Elf _) -> 1
+                                                      Warrior (Elf _ _) -> 1
                                                       _ -> 0) $ Map.elems terrain
 
-applyTurns :: [(Point, Unit)] -> Bool -> Terrain -> Int -> (Terrain, Bool)
+getUnitId :: Terrain -> Point -> String
+getUnitId terrain point = case terrain ! point of
+                            Warrior (Elf _ i) -> i
+                            Warrior (Goblin _ i) -> i
+                            _ -> ""
+
+applyTurns :: [(Point, Unit, String)] -> Bool -> Terrain -> Int -> (Terrain, Bool)
 applyTurns [] _ terrain _ = (terrain, False)
-applyTurns ((point, unit) : xs) moved terrain attackPower
+applyTurns ((point, unit, unitId) : xs) moved terrain attackPower
+  | getUnitId terrain point /= unitId = applyTurns xs False terrain attackPower
   | not $ enemyUnits unit terrain = (terrain, True)
-  | terrain ! point == Open = applyTurns xs False terrain attackPower
   | otherwise = case adjacentEnemyUnits terrain point unit of
                   [] | moved -> applyTurns xs False terrain attackPower
                   [] -> let targets = pointsToTargets unit point terrain
                             path = shortestPath point targets terrain
                         in case path of
                              (to:_) -> let unitMoved = moveUnit point to terrain
-                                       in applyTurns ((to,unit) : xs) True unitMoved attackPower
+                                       in applyTurns ((to,unit,unitId) : xs) True unitMoved attackPower
                              [] -> applyTurns xs False terrain attackPower
                   rs -> let target = selectTarget rs terrain
                         in applyTurns xs False (attackUnit target terrain attackPower) attackPower
@@ -202,35 +214,95 @@ solution2 :: Terrain -> Int
 solution2 terrain = solution2' (numberOfElves terrain) terrain 4
 
 
+test :: Terrain -> Int -> Int -> Int -> Terrain
+test terrain 0 _ _ = terrain
+test terrain rounds c ap = let turns = allUnits terrain
+                               (nextTerrain, stop) = applyTurns turns False terrain ap
+                         in test nextTerrain (rounds - 1) (c+1) ap
+
+units :: Terrain -> Terrain
+units = Map.filter (\v -> case v of
+                               Warrior _ -> True
+                               _ -> False)
+
+printMap :: [Point] -> Int -> Terrain -> String
+printMap [] _ _ = []
+printMap (p@Point{..} : xs) prevY terrain = let
+                                      c = case terrain ! p of
+                                               Warrior (Elf _ _) -> 'E'
+                                               Warrior (Goblin _ _) -> 'G'
+                                               Open -> '.'
+                                               Wall -> '#'
+                                     in if y > prevY
+                                           then '\n' : c : printMap xs y terrain
+                                           else c : printMap xs y terrain
+
+pm :: Terrain -> IO ()
+pm t = putStrLn $ printMap (Map.keys t) 0 t
+
+
 map1 = buildMap ["################################",
- "##############.#################",
- "##########G##....###############",
- "#########.....G.################",
- "#########...........############",
- "#########...........############",
- "##########.....G...#############",
- "###########.........############",
- "########.#.#..#..G....##########",
- "#######..........G......########",
- "##..GG..................###.####",
- "##G..........................###",
- "####G.G.....G.#####...E.#.G..###",
- "#....##......#######........####",
- "#.GG.#####.G#########.......####",
- "###..####...#########..E...#####",
- "#...####....#########........###",
- "#.G.###.....#########....E....##",
- "#..####...G.#########E.....E..##",
- "#..###G......#######E.........##",
- "#..##.........#####..........###",
- "#......................#..E....#",
- "##...G........G.......#...E...##",
- "##............#..........#..####",
- "###.....#...#.##..#......#######",
- "#####.###...#######...#..#######",
- "#########...E######....#########",
- "###########...######.###########",
- "############..#####..###########",
- "#############.E..##.############",
- "################.#..############",
- "################################"]
+                 "##############.#################",
+                 "##########G##....###############",
+                 "#########.....G.################",
+                 "#########...........############",
+                 "#########...........############",
+                 "##########.....G...#############",
+                 "###########.........############",
+                 "########.#.#..#..G....##########",
+                 "#######..........G......########",
+                 "##..GG..................###.####",
+                 "##G..........................###",
+                 "####G.G.....G.#####...E.#.G..###",
+                 "#....##......#######........####",
+                 "#.GG.#####.G#########.......####",
+                 "###..####...#########..E...#####",
+                 "#...####....#########........###",
+                 "#.G.###.....#########....E....##",
+                 "#..####...G.#########E.....E..##",
+                 "#..###G......#######E.........##",
+                 "#..##.........#####..........###",
+                 "#......................#..E....#",
+                 "##...G........G.......#...E...##",
+                 "##............#..........#..####",
+                 "###.....#...#.##..#......#######",
+                 "#####.###...#######...#..#######",
+                 "#########...E######....#########",
+                 "###########...######.###########",
+                 "############..#####..###########",
+                 "#############.E..##.############",
+                 "################.#..############",
+                 "################################"]
+
+map2 = Day15.buildMap ["################################",
+                       "##############.#################",
+                       "##########.##....###############",
+                       "#########.....G.################",
+                       "#########...........############",
+                       "#########........G..############",
+                       "##########.........#############",
+                       "###########........G############",
+                       "########.#.#..#.....G.##########",
+                       "#######...............G.########",
+                       "##..G.G...G.............###.####",
+                       "##........G.....G.......E....###",
+                       "####G....G....#####.....#....###",
+                       "#....##......#######....E...####",
+                       "#....#####..#########....E..####",
+                       "###..####...#########....E.#####",
+                       "#G..####....#########.....E..###",
+                       "#...###..G..#########.........##",
+                       "#..####.....#########.........##",
+                       "#..###.......#######....E.....##",
+                       "#..##.....G...#####..........###",
+                       "#..G.............GEE...#.......#",
+                       "##........GG..........#.......##",
+                       "##.........E..#..........#..####",
+                       "###.....#...#.##..#......#######",
+                       "#####.###...#######...#..#######",
+                       "#########....######....#########",
+                       "###########.E.######.###########",
+                       "############..#####..###########",
+                       "#############....##.############",
+                       "################.#..############",
+                       "################################"]
