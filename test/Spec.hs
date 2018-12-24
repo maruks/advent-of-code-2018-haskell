@@ -193,16 +193,27 @@ specs =
                                    "#.E##",
                                    "#####"]
 
-            map9 = Day15.buildMap ["#################",
-                                   "##..............#",
-                                   "##........G.....#",
-                                   "####.....G....###",
-                                   "#....##......####",
-                                   "#...............#",
-                                   "##........GG....#",
-                                   "##.........E..#.#",
-                                   "#####.###...#####",
-                                   "#################"]
+            map9 = [ "#################"
+                   , "##..............#"
+                   , "##........G.....#"
+                   , "####.....#....###"
+                   , "#....##......####"
+                   , "#...............#"
+                   , "##........##....#"
+                   , "##.........E..#.#"
+                   , "#####.###...#####"
+                   , "#################" ]
+
+            map10 = ["#################"
+                   , "##..............#"
+                   , "##..............#"
+                   , "####.....#G...###"
+                   , "#....##......####"
+                   , "#...............#"
+                   , "##........##....#"
+                   , "##..........E.#.#"
+                   , "#####.###...#####"
+                   , "#################" ]
 
             map_1 =   ["#########",
                        "#G..G..G#",
@@ -251,8 +262,10 @@ specs =
         it "returns shortest path to the nearest target" $ do
           let targets1 = Day15.pointsToTargets (Elf 200 "") (Point 1 1) map0
               targets2 = Day15.pointsToTargets (Goblin 200 "") (Point 2 3) map0
-          Day15.shortestPath (Point 1 1) targets1 map0 `shouldBe` [Point 2 1,Point 3 1]
-          Day15.shortestPath (Point 2 3) targets2 map0 `shouldBe` [Point 2 2,Point 2 1]
+              sp1 = Day15.shortestPath (Point 1 1) targets1 map0
+              sp2 = Day15.shortestPath (Point 2 3) targets2 map0
+          List.head (List.sort sp1) `shouldBe` (Point 2 1)
+          List.head (List.sort sp2) `shouldBe` (Point 2 2)
         it "returns empty path if none of targets can be reached" $ do
           let targets = Day15.pointsToTargets (Goblin 200 "") (Point 5 3) map0
           Day15.shortestPath (Point 5 3) targets map0 `shouldBe` []
@@ -263,6 +276,9 @@ specs =
           lines (Day15.printMap m2) `shouldBe` map_2
           lines (Day15.printMap m3) `shouldBe` map_3
           lines (Day15.printMap m4) `shouldBe` map_4
+        it "goblin moves down in map 9" $ do
+          let m9 = fst $ Day15.performRound (Day15.buildMap map9) 3
+          lines (Day15.printMap m9) `shouldBe` map10
         it "returns outcome of the combat" $ do
           file <- readFile "test/day15-example-1.txt"
           let example1 = Day15.buildMap $ lines file
@@ -283,4 +299,4 @@ specs =
           Day15.solution2 map4 `shouldBe` 3478
           Day15.solution2 map5 `shouldBe` 6474
           Day15.solution2 map6 `shouldBe` 1140
-          --Day15.solution2 example1 `shouldBe` 52374
+          Day15.solution2 example1 `shouldBe` 52374

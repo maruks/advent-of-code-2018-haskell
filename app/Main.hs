@@ -164,25 +164,25 @@ day14 = do
 
 day15 :: IO ()
 day15 = do
-  file <- readFile "./test/day15-2.txt"
+  file <- readFile "./test/day15.txt"
   let map = Day15.buildMap $ lines file
   print $ Day15.solution1 map
   print $ Day15.solution2 map
 
 main :: IO ()
 main = do
-  -- day1
-  -- day2
-  -- day3
-  -- day4
-  -- day5
-  -- day6
-  -- day7
-  -- day8
-  -- day9
-  -- day10
-  -- day11
-  -- day12
-  -- day13
-  -- day14
+  day1
+  day2
+  day3
+  day4
+  day5
+  day6
+  day7
+  day8
+  day9
+  day10
+  day11
+  day12
+  day13
+  day14
   day15
