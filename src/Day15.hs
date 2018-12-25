@@ -128,12 +128,10 @@ compareUnits (p1, u1) (p2, u2) =
 selectTarget :: [Point] -> Terrain -> (Point, Unit)
 selectTarget points terrain =
   let units =
-        List.map
           (\p ->
               case terrain ! p of
                 Warrior u -> u
-                _ -> error "not a unit")
-          points
+                _ -> error "not a unit") <$> points
       unitsPoints = List.zip points units
   in List.minimumBy compareUnits unitsPoints
 
@@ -142,13 +140,13 @@ pointsToTargets unit point terrain =
   let ts = targets unit terrain
   in List.concatMap (adjacentOpenSquares terrain) ts
 
-findPath :: Point -> Int -> Map Int (Set Point) -> Terrain -> [Point]
-findPath point 1 _ _ = [point]
-findPath point distance distanceMap terrain =
-  let adj = adjacentOpenSquares terrain point
+findPath :: [Point] -> Int -> Map Int (Set Point) -> Terrain -> [Point]
+findPath points 1 _ _ = points
+findPath points distance distanceMap terrain =
+  let adj = List.concatMap (adjacentOpenSquares terrain) points
       pts = distanceMap ! (distance - 1)
       nextPoints = List.filter (`Set.member` pts) adj
-  in List.concatMap (\p -> findPath p (distance - 1) distanceMap terrain) nextPoints
+  in findPath nextPoints (distance - 1) distanceMap terrain
 
 bfs
   :: Seq (Point, Int)
@@ -162,13 +160,13 @@ bfs Empty _ _ _ Nothing _ = []
 bfs Empty targets _ distanceMap (Just stopDistance) terrain =
   let intersect = Set.toList $ Set.intersection targets $ distanceMap ! stopDistance
       targetPoint = List.minimum intersect
-  in findPath targetPoint stopDistance distanceMap terrain
+  in findPath [targetPoint] stopDistance distanceMap terrain
 bfs (queue :|> (point, distance)) targets visited distanceMap stopAfter terrain
   | distance > Maybe.fromMaybe (maxBound :: Int) stopAfter =
     let stopDistance = Maybe.fromJust stopAfter
         intersect = Set.toList $ Set.intersection targets $ distanceMap ! stopDistance
         targetPoint = List.minimum intersect
-    in findPath targetPoint stopDistance distanceMap terrain
+    in findPath [targetPoint] stopDistance distanceMap terrain
   | otherwise =
     let adj = adjacentOpenSquares terrain point
         enqueue = List.filter (\p -> not $ Set.member p visited) adj
@@ -229,23 +227,19 @@ attackUnit (point, Goblin hp i) terrain attackPower =
 totalHitPoints :: Terrain -> Int
 totalHitPoints terrain =
   List.sum $
-  List.map
     (\e ->
         case e of
           Warrior (Elf h _) -> h
           Warrior (Goblin h _) -> h
-          _ -> 0) $
-  Map.elems terrain
+          _ -> 0) <$> Map.elems terrain
 
 numberOfElves :: Terrain -> Int
 numberOfElves terrain =
   List.sum $
-  List.map
     (\e ->
         case e of
           Warrior (Elf _ _) -> 1
-          _ -> 0) $
-  Map.elems terrain
+          _ -> 0) <$> Map.elems terrain
 
 getUnitId :: Terrain -> Point -> String
 getUnitId terrain point =
