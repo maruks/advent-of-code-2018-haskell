@@ -280,8 +280,10 @@ specs =
           let m9 = fst $ Day15.performRound (Day15.buildMap map9) 3
           lines (Day15.printMap m9) `shouldBe` map10
         it "returns outcome of the combat" $ do
-          file <- readFile "test/day15-example-1.txt"
-          let example1 = Day15.buildMap $ lines file
+          file <- readFile "test/day15.txt"
+          file_1 <- readFile "test/day15-example-1.txt"
+          let example1 = Day15.buildMap $ lines file_1
+              day15map = Day15.buildMap $ lines file
           Day15.solution1 map1 `shouldBe` 27730
           Day15.solution1 map2 `shouldBe` 36334
           Day15.solution1 map3 `shouldBe` 39514
@@ -291,12 +293,29 @@ specs =
           Day15.solution1 map7 `shouldBe` 13400
           Day15.solution1 map8 `shouldBe` 13987
           Day15.solution1 example1 `shouldBe` 215168
+          Day15.solution1 day15map `shouldBe` 250594
         it "returns outcome of the combat with increased attack power of elves" $ do
-          file <- readFile "test/day15-example-1.txt"
-          let example1 = Day15.buildMap $ lines file
+          file <- readFile "test/day15.txt"
+          file_0 <- readFile "test/day15-example-1.txt"
+          file_17 <- readFile "test/day15-example-1-round-17.txt"
+          file_30 <- readFile "test/day15-example-1-round-30.txt"
+          file_42 <- readFile "test/day15-example-1-round-42.txt"
+          let day15map = Day15.buildMap $ lines file
+              example1 = Day15.buildMap $ lines file_0
+              round_17_map = Day15.printMap $ Day15.buildMap $ lines file_17
+              round_30_map = Day15.printMap $ Day15.buildMap $ lines file_30
+              round_42_map = Day15.printMap $ Day15.buildMap $ lines file_42
+              example_1_rounds = Day15.rounds example1 16
+              round_17 = fst $ head $ List.drop 16 $ example_1_rounds
+              round_30 = fst $ head $ List.drop 29 $ example_1_rounds
+              round_42 = fst $ head $ List.drop 41 $ example_1_rounds
           Day15.solution2 map1 `shouldBe` 4988
           Day15.solution2 map3 `shouldBe` 31284
           Day15.solution2 map4 `shouldBe` 3478
           Day15.solution2 map5 `shouldBe` 6474
           Day15.solution2 map6 `shouldBe` 1140
           Day15.solution2 example1 `shouldBe` 52374
+          Day15.solution2 day15map `shouldBe` 52133
+          Day15.printMap round_17 `shouldBe` round_17_map
+          Day15.printMap round_30 `shouldBe` round_30_map
+          Day15.printMap round_42 `shouldBe` round_42_map

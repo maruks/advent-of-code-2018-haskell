@@ -8,6 +8,7 @@ module Day15
   , Square(..)
   , shortestPath
   , performRound
+  , rounds
   , printMap
   , solution1
   , solution2
@@ -283,29 +284,29 @@ performRound terrain attackPower =
   let turns = allUnits terrain
   in applyTurns turns False terrain attackPower
 
-finishRounds :: Terrain -> Int -> Int -> Int
-finishRounds terrain rounds attackPower =
-  let (nextTerrain, stop) = performRound terrain attackPower
-  in if stop
-       then totalHitPoints nextTerrain * rounds
-       else finishRounds nextTerrain (rounds + 1) attackPower
+rounds :: Terrain -> Int -> [(Terrain, Bool)]
+rounds terrain attackPower = let result = performRound terrain attackPower
+                             in result : rounds (fst result) attackPower
 
-tryAttackPower :: Int -> Int -> Int -> Terrain -> Maybe Int
-tryAttackPower attackPower elves rounds terrain =
-  let (nextTerrain, stop) = performRound terrain attackPower
-      allElvesAlive = numberOfElves nextTerrain == elves
-  in if not allElvesAlive
-       then Nothing
-       else if stop
-              then Just (totalHitPoints nextTerrain * rounds)
-              else tryAttackPower attackPower elves (rounds + 1) nextTerrain
+finishRounds :: Terrain -> Int -> Int
+finishRounds terrain attackPower =
+  let (finishedRounds, (lastRound, _) : _ ) = List.break snd $ rounds terrain attackPower
+  in totalHitPoints lastRound * List.length finishedRounds
+
+tryAttackPower :: Int -> Int -> Terrain -> Maybe Int
+tryAttackPower attackPower elves terrain =
+  let allElvesAlive terrain = numberOfElves terrain == elves
+      (finishedRounds, (lastRound, _) : _ ) = List.break (\(t, f) -> f || not (allElvesAlive t)) $ rounds terrain attackPower
+  in if allElvesAlive lastRound
+       then Just $ totalHitPoints lastRound * List.length finishedRounds
+       else Nothing
 
 solution1 :: Terrain -> Int
-solution1 terrain = finishRounds terrain 0 3
+solution1 terrain = finishRounds terrain 3
 
 solution2' :: Int -> Terrain -> Int -> Int
 solution2' elves terrain attackPower =
-  let res = tryAttackPower attackPower elves 0 terrain
+  let res = tryAttackPower attackPower elves terrain
   in fromMaybe (solution2' elves terrain (attackPower + 1)) res
 
 solution2 :: Terrain -> Int
