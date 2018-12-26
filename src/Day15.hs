@@ -141,10 +141,8 @@ pointsToTargets unit point terrain =
   in List.concatMap (adjacentOpenSquares terrain) ts
 
 findPath :: Point -> Point -> Map Point Point -> Maybe Point
-findPath from current pointsMap = let nextCurrent = pointsMap Map.!? current
-                                  in case nextCurrent of
-                                       Nothing -> Nothing
-                                       Just p -> if p == from then Just current else findPath from p pointsMap
+findPath from current pointsMap =
+  pointsMap Map.!? current >>= (\p -> if p == from then Just current else findPath from p pointsMap)
 
 bfs
   :: Seq (Point, Int, Point)
@@ -323,20 +321,3 @@ printMap terrain = printMap' (Map.keys terrain) 0 terrain
 
 pm :: Terrain -> IO ()
 pm = putStrLn . printMap
-
-
-map0 = Day15.buildMap ["################################",
-                       "#########..G...####...###......#",
-                       "#########.G...GEG.....###.....##",
-                       "########...G..#####...##########",
-                       "#########.G..#######..##########",
-                       "#########...#########.##########",
-                       "#...........G#######...#########",
-                       "#...#.......E.#####....#########",
-                       "#####.....GE.............#######",
-                       "####...G.GE..E...........#######",
-                       "################################"]
-
-targets1 = Day15.pointsToTargets (Goblin 200 "") (Point 10 2) map0
-
-sp = shortestPath (Point 10 2) targets1 map0
