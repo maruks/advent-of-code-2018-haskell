@@ -140,16 +140,11 @@ pointsToTargets unit point terrain =
   let ts = targets unit terrain
   in List.concatMap (adjacentOpenSquares terrain) ts
 
-findPath :: Point -> [Point] -> Map Point Point -> Maybe Point
-findPath _ [] _ = Nothing
-findPath point points pointsMap =
-  let (prev, current) = List.foldl (\a@(xs,ys) p -> case pointsMap Map.!? p of
-                                       Nothing -> a
-                                       Just x -> (x:xs, p:ys)) ([],[]) points
-      nextPoints = List.nub prev
-      in if nextPoints == [point]
-         then Just $ List.minimum current
-         else findPath point nextPoints pointsMap
+findPath :: Point -> Point -> Map Point Point -> Maybe Point
+findPath from current pointsMap = let nextCurrent = pointsMap Map.!? current
+                                  in case nextCurrent of
+                                       Nothing -> Nothing
+                                       Just p -> if p == from then Just current else findPath from p pointsMap
 
 bfs
   :: Seq (Point, Int, Point)
@@ -186,7 +181,7 @@ shortestPath point targets terrain =
                                           Just p -> if t < p then Just t else a
                                           Nothing -> Just t) Nothing targets
   in case target of
-    Just t -> findPath point [t] pointsMap
+    Just t -> findPath point t pointsMap
     Nothing -> Nothing
 
 allUnits :: Terrain -> [(Point, Unit, String)]
