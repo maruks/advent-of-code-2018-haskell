@@ -140,58 +140,54 @@ pointsToTargets unit point terrain =
   let ts = targets unit terrain
   in List.concatMap (adjacentOpenSquares terrain) ts
 
-findPath :: [Point] -> Int -> Map Int (Set Point) -> Terrain -> [Point]
-findPath points 1 _ _ = points
-findPath points distance distanceMap terrain =
-  let adj = List.concatMap (adjacentOpenSquares terrain) points
-      pts = distanceMap ! (distance - 1)
-      nextPoints = List.filter (`Set.member` pts) adj
-  in findPath nextPoints (distance - 1) distanceMap terrain
+findPath :: Point -> [Point] -> Map Point Point -> Maybe Point
+findPath _ [] _ = Nothing
+findPath point points pointsMap =
+  let (prev, current) = List.foldl (\a@(xs,ys) p -> case pointsMap Map.!? p of
+                                       Nothing -> a
+                                       Just x -> (x:xs, p:ys)) ([],[]) points
+      nextPoints = List.nub prev
+      in if nextPoints == [point]
+         then Just $ List.minimum current
+         else findPath point nextPoints pointsMap
 
 bfs
-  :: Seq (Point, Int)
+  :: Seq (Point, Int, Point)
   -> Set Point
   -> Set Point
-  -> Map Int (Set Point)
+  -> Map Point Point
   -> Maybe Int
   -> Terrain
-  -> [Point]
-bfs Empty _ _ _ Nothing _ = []
-bfs Empty targets _ distanceMap (Just stopDistance) terrain =
-  let intersect = Set.toList $ Set.intersection targets $ distanceMap ! stopDistance
-      targetPoint = List.minimum intersect
-  in findPath [targetPoint] stopDistance distanceMap terrain
-bfs (queue :|> (point, distance)) targets visited distanceMap stopAfter terrain
-  | distance > Maybe.fromMaybe (maxBound :: Int) stopAfter =
-    let stopDistance = Maybe.fromJust stopAfter
-        intersect = Set.toList $ Set.intersection targets $ distanceMap ! stopDistance
-        targetPoint = List.minimum intersect
-    in findPath [targetPoint] stopDistance distanceMap terrain
+  -> Map Point Point
+bfs Empty _ _ _ Nothing _ = Map.empty
+bfs Empty targets _ pointsMap (Just stopDistance) terrain = pointsMap
+bfs (queue :|> (point, distance, parent)) targets visited pointsMap stopAfter terrain
+  | distance > Maybe.fromMaybe (maxBound :: Int) stopAfter = pointsMap
   | otherwise =
     let adj = adjacentOpenSquares terrain point
-        enqueue = List.filter (\p -> not $ Set.member p visited) adj
+        enqueue = List.sort $ List.filter (\p -> not $ Set.member p visited) adj
         nextVisited = List.foldl (flip Set.insert) visited enqueue
         nextDist = distance + 1
         nextStop =
           if Maybe.isNothing stopAfter && Set.member point targets
             then Just distance
             else stopAfter
-        nextQueue =
-          List.foldl (flip (<|)) queue $ List.zip enqueue (repeat nextDist)
-        enqSet = Set.fromList enqueue
-        nextDistMap = Map.insertWith Set.union nextDist enqSet distanceMap
-    in bfs nextQueue targets nextVisited nextDistMap nextStop terrain
+        nextQueue = List.foldl (flip (<|)) queue $ List.zip3 enqueue (repeat nextDist) (repeat point)
+        nextPointsMap = if Map.notMember point pointsMap then Map.insert point parent pointsMap else pointsMap
+    in bfs nextQueue targets nextVisited nextPointsMap nextStop terrain
 
-shortestPath :: Point -> [Point] -> Terrain -> [Point]
+shortestPath :: Point -> [Point] -> Terrain -> Maybe Point
 shortestPath point targets terrain =
-  let queue = (point, 0) <| Seq.empty
-  in bfs
-       queue
-       (Set.fromList targets)
-       (Set.fromList [point])
-       (Map.fromList [(0, Set.fromList [point])])
-       Nothing
-       terrain
+  let queue = (point, 0, point) <| Seq.empty
+      pointsMap = bfs queue (Set.fromList targets) (Set.fromList [point]) Map.empty Nothing terrain
+      target = List.foldl (\a t -> if Map.notMember t pointsMap
+                                   then a
+                                   else case a of
+                                          Just p -> if t < p then Just t else a
+                                          Nothing -> Just t) Nothing targets
+  in case target of
+    Just t -> findPath point [t] pointsMap
+    Nothing -> Nothing
 
 allUnits :: Terrain -> [(Point, Unit, String)]
 allUnits terrain =
@@ -263,12 +259,12 @@ applyTurns ((point, unit, unitId):xs) moved terrain attackPower
         | moved -> applyTurns xs False terrain attackPower
       [] ->
         let targets = pointsToTargets unit point terrain
-            path = List.sort $ shortestPath point targets terrain
+            path = shortestPath point targets terrain
         in case path of
-             (to:_) ->
+             Just to ->
                let unitMoved = moveUnit point to terrain
                in applyTurns ((to, unit, unitId) : xs) True unitMoved attackPower
-             [] -> applyTurns xs False terrain attackPower
+             Nothing -> applyTurns xs False terrain attackPower
       rs ->
         let target = selectTarget rs terrain
         in applyTurns xs False (attackUnit target terrain attackPower) attackPower
@@ -332,3 +328,20 @@ printMap terrain = printMap' (Map.keys terrain) 0 terrain
 
 pm :: Terrain -> IO ()
 pm = putStrLn . printMap
+
+
+map0 = Day15.buildMap ["################################",
+                       "#########..G...####...###......#",
+                       "#########.G...GEG.....###.....##",
+                       "########...G..#####...##########",
+                       "#########.G..#######..##########",
+                       "#########...#########.##########",
+                       "#...........G#######...#########",
+                       "#...#.......E.#####....#########",
+                       "#####.....GE.............#######",
+                       "####...G.GE..E...........#######",
+                       "################################"]
+
+targets1 = Day15.pointsToTargets (Goblin 200 "") (Point 10 2) map0
+
+sp = shortestPath (Point 10 2) targets1 map0
