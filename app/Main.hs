@@ -18,6 +18,7 @@ import qualified Day12
 import qualified Day13
 import qualified Day14
 import qualified Day15
+import qualified Day16
 
 import Text.Regex.PCRE
 
@@ -169,6 +170,35 @@ day15 = do
   print $ Day15.solution1 map
   print $ Day15.solution2 map
 
+parseDay16Input :: [String] -> [Day16.Sample]
+parseDay16Input [] = []
+parseDay16Input xs = let ([_,before, opcode, after], rs) = List.splitAt 4 xs
+                         bf_result = before =~ "Before: (\\[(\\d,?\\s?)+\\])" :: AllTextSubmatches [] String
+                         [a0,b0,c0,d0] = read $ getAllTextSubmatches bf_result !! 1 :: [Int]
+                         op_result = opcode =~ "\\d+" :: AllTextMatches [] String
+                         [a1,b1,c1,d1] = map read $ getAllTextMatches op_result :: [Int]
+                         af_result = after =~ "After:  (\\[(\\d,?\\s?)+\\])" :: AllTextSubmatches [] String
+                         [a2,b2,c2,d2] = read $ getAllTextSubmatches af_result !! 1 :: [Int]
+                     in
+                       ((a0,b0,c0,d0),(a1,b1,c1,d1),(a2,b2,c2,d2)) : parseDay16Input rs
+
+parseDay16Input_part2 :: String -> Day16.BinOpcode
+parseDay16Input_part2 s =
+  let result = s =~ "\\d+" :: AllTextMatches [] String
+      [a,b,c,d] = map read $ getAllTextMatches result :: [Int]
+  in (a,b,c,d)
+
+day16 :: IO ()
+day16 = do
+  file1 <- readFile "./test/day16-part-1.txt"
+  file2 <- readFile "./test/day16-part-2.txt"
+  let samples = parseDay16Input $ lines file1
+      opcodes = map parseDay16Input_part2 $ lines file2
+      opcodeNumbers = Day16.findOpcodeNumbers samples
+  print $ Day16.solution1 samples
+  print $ opcodeNumbers
+  print $ Day16.solution2 opcodes opcodeNumbers
+
 main :: IO ()
 main = do
   day1
@@ -186,3 +216,4 @@ main = do
   day13
   day14
   day15
+  day16

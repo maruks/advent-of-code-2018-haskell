@@ -20,8 +20,6 @@ import Data.Maybe as Maybe
 import Data.Map.Strict as Map
 import Data.Sequence as Seq
 
-import Debug.Trace
-
 data Point = Point
   { x :: Int
   , y :: Int
@@ -128,10 +126,11 @@ compareUnits (p1, u1) (p2, u2) =
 selectTarget :: [Point] -> Terrain -> (Point, Unit)
 selectTarget points terrain =
   let units =
-          (\p ->
-              case terrain ! p of
-                Warrior u -> u
-                _ -> error "not a unit") <$> points
+        (\p ->
+            case terrain ! p of
+              Warrior u -> u
+              _ -> error "not a unit") <$>
+        points
       unitsPoints = List.zip points units
   in List.minimumBy compareUnits unitsPoints
 
@@ -142,7 +141,11 @@ pointsToTargets unit point terrain =
 
 findPath :: Point -> Point -> Map Point Point -> Maybe Point
 findPath from current pointsMap =
-  pointsMap Map.!? current >>= (\p -> if p == from then Just current else findPath from p pointsMap)
+  pointsMap Map.!? current >>=
+  (\p ->
+      if p == from
+        then Just current
+        else findPath from p pointsMap)
 
 bfs
   :: Seq (Point, Int, Point)
@@ -165,22 +168,42 @@ bfs (queue :|> (point, distance, parent)) targets visited pointsMap stopAfter te
           if Maybe.isNothing stopAfter && Set.member point targets
             then Just distance
             else stopAfter
-        nextQueue = List.foldl (flip (<|)) queue $ List.zip3 enqueue (repeat nextDist) (repeat point)
-        nextPointsMap = if Map.notMember point pointsMap then Map.insert point parent pointsMap else pointsMap
+        nextQueue =
+          List.foldl (flip (<|)) queue $
+          List.zip3 enqueue (repeat nextDist) (repeat point)
+        nextPointsMap =
+          if Map.notMember point pointsMap
+            then Map.insert point parent pointsMap
+            else pointsMap
     in bfs nextQueue targets nextVisited nextPointsMap nextStop terrain
 
 shortestPath :: Point -> [Point] -> Terrain -> Maybe Point
 shortestPath point targets terrain =
   let queue = (point, 0, point) <| Seq.empty
-      pointsMap = bfs queue (Set.fromList targets) (Set.fromList [point]) Map.empty Nothing terrain
-      target = List.foldl (\a t -> if Map.notMember t pointsMap
-                                   then a
-                                   else case a of
-                                          Just p -> if t < p then Just t else a
-                                          Nothing -> Just t) Nothing targets
+      pointsMap =
+        bfs
+          queue
+          (Set.fromList targets)
+          (Set.fromList [point])
+          Map.empty
+          Nothing
+          terrain
+      target =
+        List.foldl
+          (\a t ->
+              if Map.notMember t pointsMap
+                then a
+                else case a of
+                       Just p ->
+                         if t < p
+                           then Just t
+                           else a
+                       Nothing -> Just t)
+          Nothing
+          targets
   in case target of
-    Just t -> findPath point t pointsMap
-    Nothing -> Nothing
+       Just t -> findPath point t pointsMap
+       Nothing -> Nothing
 
 allUnits :: Terrain -> [(Point, Unit, String)]
 allUnits terrain =
@@ -216,19 +239,21 @@ attackUnit (point, Goblin hp i) terrain attackPower =
 totalHitPoints :: Terrain -> Int
 totalHitPoints terrain =
   List.sum $
-    (\e ->
-        case e of
-          Warrior (Elf h _) -> h
-          Warrior (Goblin h _) -> h
-          _ -> 0) <$> Map.elems terrain
+  (\e ->
+      case e of
+        Warrior (Elf h _) -> h
+        Warrior (Goblin h _) -> h
+        _ -> 0) <$>
+  Map.elems terrain
 
 numberOfElves :: Terrain -> Int
 numberOfElves terrain =
   List.sum $
-    (\e ->
-        case e of
-          Warrior (Elf _ _) -> 1
-          _ -> 0) <$> Map.elems terrain
+  (\e ->
+      case e of
+        Warrior (Elf _ _) -> 1
+        _ -> 0) <$>
+  Map.elems terrain
 
 getUnitId :: Terrain -> Point -> String
 getUnitId terrain point =
@@ -268,18 +293,20 @@ performRound terrain attackPower =
   in applyTurns turns False terrain attackPower
 
 rounds :: Terrain -> Int -> [(Terrain, Bool)]
-rounds terrain attackPower = let result = performRound terrain attackPower
-                             in result : rounds (fst result) attackPower
+rounds terrain attackPower =
+  let result = performRound terrain attackPower
+  in result : rounds (fst result) attackPower
 
 finishRounds :: Terrain -> Int -> Int
 finishRounds terrain attackPower =
-  let (finishedRounds, (lastRound, _) : _ ) = List.break snd $ rounds terrain attackPower
+  let (finishedRounds, (lastRound, _):_) = List.break snd $ rounds terrain attackPower
   in totalHitPoints lastRound * List.length finishedRounds
 
 tryAttackPower :: Int -> Int -> Terrain -> Maybe Int
 tryAttackPower attackPower elves terrain =
   let allElvesAlive terrain = numberOfElves terrain == elves
-      (finishedRounds, (lastRound, _) : _ ) = List.break (\(t, f) -> f || not (allElvesAlive t)) $ rounds terrain attackPower
+      (finishedRounds, (lastRound, _):_) =
+        List.break (\(t, f) -> f || not (allElvesAlive t)) $ rounds terrain attackPower
   in if allElvesAlive lastRound
        then Just $ totalHitPoints lastRound * List.length finishedRounds
        else Nothing

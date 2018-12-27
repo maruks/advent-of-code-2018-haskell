@@ -22,6 +22,7 @@ import qualified Day13
 import qualified Day14
 import qualified Day15
 import Day15 (Point(..), Unit(..), Square(..))
+import qualified Day16
 
 main :: IO ()
 main = hspecWith defaultConfig { configFastFail = True} specs
@@ -319,3 +320,6 @@ specs =
           Day15.printMap round_1 `shouldBe` round_1_map
           Day15.printMap round_17 `shouldBe` round_17_map
           Day15.printMap round_42 `shouldBe` round_42_map
+      describe "day 16" $ do
+        it "returns how many opcodes are valid for given sample" $ do
+          Day16.solution1 [((3, 2, 1, 1),(9, 2, 1, 2),(3, 2, 2, 1))] `shouldBe` 1
