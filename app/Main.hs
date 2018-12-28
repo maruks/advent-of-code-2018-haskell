@@ -205,6 +205,7 @@ day17 = do
   file <- readFile "./test/day17.txt"
   let input = Day17.parseInput $ lines file
   print $ Day17.solution1 input
+  print $ Day17.solution2 input
 
 main :: IO ()
 main = do

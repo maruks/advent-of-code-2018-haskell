@@ -329,3 +329,8 @@ specs =
           file <- readFile "./test/day17-example-1.txt"
           let input = Day17.parseInput $ lines file
           Day17.solution1 input `shouldBe` 57
+          Day17.solution2 input `shouldBe` 29
+        it "returns how many water tiles are left after the water spring stops producing water" $ do
+          file <- readFile "./test/day17-example-1.txt"
+          let input = Day17.parseInput $ lines file
+          Day17.solution2 input `shouldBe` 29
