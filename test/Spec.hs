@@ -23,6 +23,7 @@ import qualified Day14
 import qualified Day15
 import Day15 (Point(..), Unit(..), Square(..))
 import qualified Day16
+import qualified Day17
 
 main :: IO ()
 main = hspecWith defaultConfig { configFastFail = True} specs
@@ -323,3 +324,8 @@ specs =
       describe "day 16" $ do
         it "returns how many opcodes are valid for given sample" $ do
           Day16.solution1 [((3, 2, 1, 1),(9, 2, 1, 2),(3, 2, 2, 1))] `shouldBe` 1
+      describe "day 17" $ do
+        it "returns how many tiles are wet" $ do
+          file <- readFile "./test/day17-example-1.txt"
+          let input = Day17.parseInput $ lines file
+          Day17.solution1 input `shouldBe` 57

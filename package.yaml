@@ -29,6 +29,7 @@ library:
   - vector
   - primitive
   - mtl
+  - regex-pcre
 
 executables:
   advent-of-code-exe:

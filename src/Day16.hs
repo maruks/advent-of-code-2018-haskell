@@ -10,8 +10,6 @@ import Data.List as List
 import Data.Map.Strict as Map
 import Data.Set as Set
 
-import Debug.Trace
-
 data State = State
   { register_0 :: Int
   , register_1 :: Int

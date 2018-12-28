@@ -19,6 +19,7 @@ import qualified Day13
 import qualified Day14
 import qualified Day15
 import qualified Day16
+import qualified Day17
 
 import Text.Regex.PCRE
 
@@ -196,8 +197,14 @@ day16 = do
       opcodes = map parseDay16Input_part2 $ lines file2
       opcodeNumbers = Day16.findOpcodeNumbers samples
   print $ Day16.solution1 samples
-  print $ opcodeNumbers
+--  print $ opcodeNumbers
   print $ Day16.solution2 opcodes opcodeNumbers
+
+day17 :: IO ()
+day17 = do
+  file <- readFile "./test/day17.txt"
+  let input = Day17.parseInput $ lines file
+  print $ Day17.solution1 input
 
 main :: IO ()
 main = do
@@ -217,3 +224,4 @@ main = do
   day14
   day15
   day16
+  day17
