@@ -162,14 +162,14 @@ bfs (queue :|> (point, distance, parent)) targets visited pointsMap stopAfter te
   | otherwise =
     let adj = adjacentOpenSquares terrain point
         enqueue = List.sort $ List.filter (\p -> not $ Set.member p visited) adj
-        nextVisited = List.foldl (flip Set.insert) visited enqueue
+        nextVisited = List.foldl' (flip Set.insert) visited enqueue
         nextDist = distance + 1
         nextStop =
           if Maybe.isNothing stopAfter && Set.member point targets
             then Just distance
             else stopAfter
         nextQueue =
-          List.foldl (flip (<|)) queue $
+          List.foldl' (flip (<|)) queue $
           List.zip3 enqueue (repeat nextDist) (repeat point)
         nextPointsMap =
           if Map.notMember point pointsMap
@@ -189,7 +189,7 @@ shortestPath point targets terrain =
           Nothing
           terrain
       target =
-        List.foldl
+        List.foldl'
           (\a t ->
               if Map.notMember t pointsMap
                 then a
@@ -209,7 +209,7 @@ allUnits :: Terrain -> [(Point, Unit, String)]
 allUnits terrain =
   let results :: [(Point, Unit, String)]
       results =
-        Map.foldlWithKey
+        Map.foldlWithKey'
           (\acc point unit ->
               case unit of
                 Warrior u@(Elf _ i) -> (point, u, i) : acc
