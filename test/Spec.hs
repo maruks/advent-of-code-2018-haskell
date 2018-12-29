@@ -24,6 +24,7 @@ import qualified Day15
 import Day15 (Point(..), Unit(..), Square(..))
 import qualified Day16
 import qualified Day17
+import qualified Day18
 
 main :: IO ()
 main = hspecWith defaultConfig { configFastFail = True} specs
@@ -334,3 +335,17 @@ specs =
           file <- readFile "./test/day17-example-1.txt"
           let input = Day17.parseInput $ lines file
           Day17.solution2 input `shouldBe` 29
+      describe "day 18" $ do
+        let scan = [".#.#...|#.",
+                    ".....#|##|",
+                    ".|..|...#.",
+                    "..|#.....#",
+                    "#.#|||#|#|",
+                    "...#.||...",
+                    ".|....|...",
+                    "||...#|.#|",
+                    "|.||||..|.",
+                    "...#.|..|."]
+        it "returns resource value after ten minutes" $ do
+          let input = Day18.buildMap scan
+          Day18.solution1 input `shouldBe` 1147

@@ -20,6 +20,7 @@ import qualified Day14
 import qualified Day15
 import qualified Day16
 import qualified Day17
+import qualified Day18
 
 import Text.Regex.PCRE
 
@@ -207,6 +208,13 @@ day17 = do
   print $ Day17.solution1 input
   print $ Day17.solution2 input
 
+day18 :: IO ()
+day18 = do
+  file <- readFile "./test/day18.txt"
+  let input = Day18.buildMap $ lines file
+  print $ Day18.solution1 input
+  print $ Day18.solution2 input
+
 main :: IO ()
 main = do
   day1
@@ -226,3 +234,4 @@ main = do
   day15
   day16
   day17
+  day18
