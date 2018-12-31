@@ -25,6 +25,7 @@ import Day15 (Point(..), Unit(..), Square(..))
 import qualified Day16
 import qualified Day17
 import qualified Day18
+import qualified Day19
 
 main :: IO ()
 main = hspecWith defaultConfig { configFastFail = True} specs
@@ -349,3 +350,20 @@ specs =
         it "returns resource value after ten minutes" $ do
           let input = Day18.buildMap scan
           Day18.solution1 input `shouldBe` 1147
+      describe "day 19" $ do
+        let c0de = ["#ip 0",
+                    "seti 5 0 1",
+                    "seti 6 0 2",
+                    "addi 0 1 0",
+                    "addr 1 2 3",
+                    "setr 1 0 0",
+                    "seti 8 0 4",
+                    "seti 9 0 5"]
+            code = Day19.parseCode c0de
+        it "returns final value of each register" $ do
+          Day19.solution1 code 0 `shouldBe` 6
+          Day19.solution1 code 1 `shouldBe` 5
+          Day19.solution1 code 2 `shouldBe` 6
+          Day19.solution1 code 3 `shouldBe` 0
+          Day19.solution1 code 4 `shouldBe` 0
+          Day19.solution1 code 5 `shouldBe` 9
