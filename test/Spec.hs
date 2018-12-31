@@ -367,3 +367,7 @@ specs =
           Day19.solution1 code 3 `shouldBe` 0
           Day19.solution1 code 4 `shouldBe` 0
           Day19.solution1 code 5 `shouldBe` 9
+        it "returns value or register 0" $ do
+          file <- readFile "./test/day19.txt"
+          let input = Day19.parseCode $ lines file
+          Day19.solution1 input 0 `shouldBe` 1860
