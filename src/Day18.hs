@@ -35,8 +35,8 @@ adjacentLumberyardsAndTrees point scan = List.foldl' (\a@(l,t) p -> case scan Ma
                                                                       _ -> a) (0,0) $ adjacent point
 
 mapDimensions :: Scan -> (Int, Int)
-mapDimensions scan = (maxX, maxY) where maxX = List.maximum $ List.map x $ Map.keys scan
-                                        maxY = List.maximum $ List.map y $ Map.keys scan
+mapDimensions scan = (maxX, maxY) where maxX = List.maximum $ x <$> Map.keys scan
+                                        maxY = List.maximum $ y <$> Map.keys scan
 
 fill :: Acre -> (Int, Int) -> Acre
 fill prev (lumberyards, trees)

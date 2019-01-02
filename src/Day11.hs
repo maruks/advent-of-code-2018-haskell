@@ -24,7 +24,7 @@ solution1 gridNumber =
   in List.maximumBy (\p1 p2 -> compare (squareSum g p1) (squareSum g p2)) points
 
 grid :: Int -> Grid
-grid gridNumber = Map.fromList $ List.zip points $ List.map power points
+grid gridNumber = Map.fromList $ List.zip points $ power <$> points
   where
     points = (,) <$> [1 .. 300] <*> [1 .. 300]
     power (x, y) =
@@ -33,7 +33,7 @@ grid gridNumber = Map.fromList $ List.zip points $ List.map power points
 squareSum :: Grid -> Point -> Int
 squareSum g p =
   let points = (,) <$> [0 .. 2] <*> [0 .. 2]
-  in List.sum $ List.map (\e -> Map.findWithDefault 0 (e <> p) g) points
+  in List.sum $ (\e -> Map.findWithDefault 0 (e <> p) g) <$> points
 
 solution2 :: Int -> (Int, Int, Int)
 solution2 gridNumber =

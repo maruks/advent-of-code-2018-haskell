@@ -81,7 +81,7 @@ execute o@Opcode{..} s@State{..} = case name of
                                Eqrr -> setRegister s result r where r = if registerValue s operand_0 == registerValue s operand_1 then 1 else 0
 
 allOpcodesWithOperands :: (Int, Int, Int, Int) -> [Opcode]
-allOpcodesWithOperands (_, a, b, c) = List.map (\name -> Opcode name a b c) $ enumFromTo Addr Eqrr
+allOpcodesWithOperands (_, a, b, c) = (\name -> Opcode name a b c) <$> enumFromTo Addr Eqrr
 
 stateFromList :: (Int, Int, Int, Int) -> State
 stateFromList (a,b,c,d) = State a b c d
@@ -93,7 +93,7 @@ validOpcodes :: State -> State -> [Opcode] -> [Opcode]
 validOpcodes before after = List.filter (validOpcode before after)
 
 solution1 :: [Sample] -> Int
-solution1 xs = let opcodeNums = List.map (\(b,o,a) -> length $ validOpcodes (stateFromList b) (stateFromList a) $ allOpcodesWithOperands o) xs
+solution1 xs = let opcodeNums = (\(b,o,a) -> length $ validOpcodes (stateFromList b) (stateFromList a) $ allOpcodesWithOperands o) <$> xs
                in length $ List.filter (>=3) opcodeNums
 
 opcodeNumber :: (Int,Int,Int,Int) -> Int
@@ -105,7 +105,7 @@ findOpcodeNumbers' ((b, o, a) : xs) opcodes =
   let allOpcodes = allOpcodesWithOperands o
       before = stateFromList b
       after = stateFromList a
-      validNames = List.map name $ validOpcodes before after allOpcodes
+      validNames = name <$> validOpcodes before after allOpcodes
       opNumber = opcodeNumber o
       nextOpcodes = Map.insertWith Set.intersection opNumber (Set.fromList validNames) opcodes
   in findOpcodeNumbers' xs nextOpcodes
@@ -113,9 +113,9 @@ findOpcodeNumbers' ((b, o, a) : xs) opcodes =
 findSingleOpcode :: Map Int (Set OpcodeName) -> Map Int OpcodeName -> Map Int OpcodeName
 findSingleOpcode opcodes opmap =
   let singleCodes = Map.filter ((== 1) . Set.size) opcodes
-      singleCodesMap = Map.map (head . Set.toList) singleCodes
+      singleCodesMap = (head . Set.toList) <$> singleCodes
       allFound = Set.fromList $ Map.elems singleCodesMap
-      nextOpcodes = Map.map (`Set.difference` allFound) opcodes
+      nextOpcodes = (`Set.difference` allFound) <$> opcodes
   in if Map.null singleCodes
      then opmap
      else findSingleOpcode nextOpcodes $ Map.union opmap singleCodesMap
@@ -125,6 +125,6 @@ findOpcodeNumbers xs =
   findSingleOpcode numbers Map.empty where numbers = findOpcodeNumbers' xs Map.empty
 
 solution2 :: [BinOpcode] -> Map Int OpcodeName -> Int
-solution2 xs codes = let opcodes = List.map (\(a,b,c,d) -> Opcode (codes ! a) b c d) xs
+solution2 xs codes = let opcodes = (\(a,b,c,d) -> Opcode (codes ! a) b c d) <$> xs
                          state = List.foldl (flip execute) (State 0 0 0 0) opcodes
                      in register_0 state

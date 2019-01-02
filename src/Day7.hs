@@ -37,7 +37,7 @@ buildTasks xs =
               , updateValue mapA before step))
           ([], Map.empty, Map.empty)
           xs
-  in Tasks (List.map head $ group $ sort a) ma mb
+  in Tasks (head <$> (group $ sort a)) ma mb
 
 availableTasks :: Tasks -> String
 availableTasks Tasks {..} =
@@ -72,20 +72,17 @@ solution2 xs maxWorkers duration =
 
 solution2' :: Int -> Int -> Int -> Int -> [Worker] -> Tasks -> Int
 solution2' result seconds maxWorkers duration workers t@Tasks {..} =
-  let updatedWs =
-        List.map
-          (\w@Worker {..} -> w { time = time - seconds})
-          workers
-      finishedSteps = List.map step $ List.filter ((== 0) . time) updatedWs
+  let updatedWs = (\w@Worker {..} -> w { time = time - seconds}) <$> workers
+      finishedSteps = step <$> List.filter ((== 0) . time) updatedWs
       nextTasks@Tasks {steps = nextSteps} = List.foldl (flip stepFinished) t finishedSteps
       activeWorkers = List.filter ((/= 0) . time) updatedWs
       availWorkers = maxWorkers - length activeWorkers
-      availTasks = availableTasks nextTasks List.\\ List.map step activeWorkers
+      availTasks = availableTasks nextTasks List.\\ (step <$> activeWorkers)
       tasksToStart = List.take availWorkers availTasks
       nextWorkers =
         activeWorkers ++
-        List.map (\s -> Worker s (duration + 1 + Char.ord s - Char.ord 'A')) tasksToStart
-      nextSeconds = List.minimum $ List.map time nextWorkers
+        ((\s -> Worker s (duration + 1 + Char.ord s - Char.ord 'A')) <$> tasksToStart)
+      nextSeconds = List.minimum $ time <$> nextWorkers
   in if List.null nextWorkers
        then result + seconds
        else solution2' (result + seconds) nextSeconds maxWorkers duration nextWorkers nextTasks

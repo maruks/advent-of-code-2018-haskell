@@ -19,7 +19,7 @@ type Transition = Map PotState Bool
 solution1 :: Transition -> [Bool] -> Int -> Int
 solution1 t xs iter = let plants = growPlants xs iter t
                           pots = potNumbers iter plants
-                      in List.sum $ List.map snd $ List.filter fst pots
+                      in List.sum $ snd <$> List.filter fst pots
 
 replace :: (PrimMonad m) => Bool -> Bool -> Int -> Int -> Transition -> M.MVector (PrimState m) Bool -> m ()
 replace p1 p2 idx len t vec =

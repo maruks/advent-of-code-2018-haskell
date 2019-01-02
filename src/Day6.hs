@@ -39,13 +39,12 @@ areaSize' d s point allPoints = let pts = List.filter (\p -> List.all (\p' -> di
 
 addPoints :: Point -> Int -> [Point]
 addPoints (x,y) d = let r1 = [0 .. d - 1]
-                    in List.map (\e -> (x + e, y + d - e)) r1 ++
-                       List.map (\e -> (x + d - e, y - e)) r1 ++
-                       List.map (\e -> (x - e, y - d + e)) r1 ++
-                       List.map (\e -> (x - d + e, y + e)) r1
+                    in ((\e -> (x + e, y + d - e)) <$> r1) ++
+                       ((\e -> (x + d - e, y - e)) <$> r1) ++
+                       ((\e -> (x - e, y - d + e)) <$> r1) ++
+                       ((\e -> (x - d + e, y + e)) <$> r1)
 
 solution2 :: [Point] -> Int -> Int
 solution2  points size = let pts = (,) <$> [1 .. 1000] <*> [1 .. 1000]
-                             area = List.filter (\p -> size > List.sum (List.map (distance p) points)) pts
-                         in
-                           length area
+                             area = List.filter (\p -> size > List.sum (distance p <$> points)) pts
+                         in length area

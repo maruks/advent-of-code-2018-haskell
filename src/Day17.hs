@@ -57,7 +57,7 @@ flow (queue :|> point@(x,y)) maxY scan =
 
 flowResult :: Scan -> Scan
 flowResult scan =
-  let ys = List.map snd $ Map.keys scan
+  let ys = snd <$> Map.keys scan
       minY = List.minimum ys
       maxY = List.maximum ys
   in flow ((500, minY) <| Seq.empty) maxY scan
@@ -77,7 +77,7 @@ parseInput' (x:xs) = let result = x =~ "(x|y)=(\\d+), (x|y)=(\\d+)..(\\d+)" :: A
                          r1 = read c :: Int
                          r2 = read d :: Int
                          pairs = [ (xp, y) | y <- [r1..r2] ]
-                         mpairs = if inverted then List.map Tuple.swap pairs else pairs
+                         mpairs = if inverted then Tuple.swap <$> pairs else pairs
                      in mpairs ++ parseInput' xs
 
 parseInput :: [String] -> Scan
