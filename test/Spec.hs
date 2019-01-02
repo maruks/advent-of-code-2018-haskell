@@ -26,6 +26,7 @@ import qualified Day16
 import qualified Day17
 import qualified Day18
 import qualified Day19
+import qualified Day20
 
 main :: IO ()
 main = hspecWith defaultConfig { configFastFail = True} specs
@@ -371,3 +372,54 @@ specs =
           file <- readFile "./test/day19.txt"
           let input = Day19.parseCode $ lines file
           Day19.solution1 input 0 `shouldBe` 1860
+      describe "day 20" $ do
+        let r1 = "^ENNWSWW(NEWS|)SSSEEN(WNSE|)EE(SWEN|)NNN$"
+            r2 = "^ESSWWN(E|NNENN(EESS(WNSE|)SSS|WWWSSSSE(SW|NNNE)))$"
+            r3 = "^WSSEESWWWNW(S|NENNEEEENN(ESSSSW(NWSW|SSEN)|WSWWN(E|WWS(E|SS))))$"
+            m1 = ["###########",
+                  "#.|.#.|.#.#",
+                  "#-###-#-#-#",
+                  "#.|.|.#.#.#",
+                  "#-#####-#-#",
+                  "#.#.#.|.#.#",
+                  "#-#-#####-#",
+                  "#.#.|.|.|.#",
+                  "#-###-###-#",
+                  "#.|.|.#.|.#",
+                  "###########"]
+            m2 = ["#############",
+                  "#.|.|.|.|.|.#",
+                  "#-#####-###-#",
+                  "#.#.|.#.#.#.#",
+                  "#-#-###-#-#-#",
+                  "#.#.#.|.#.|.#",
+                  "#-#-#-#####-#",
+                  "#.#.#.#.|.#.#",
+                  "#-#-#-###-#-#",
+                  "#.|.#.|.#.#.#",
+                  "###-#-###-#-#",
+                  "#.|.#.|.|.#.#",
+                  "#############"]
+            m3 = ["###############",
+                  "#.|.|.|.#.|.|.#",
+                  "#-###-###-#-#-#",
+                  "#.|.#.|.|.#.#.#",
+                  "#-#########-#-#",
+                  "#.#.|.|.|.|.#.#",
+                  "#-#-#########-#",
+                  "#.#.#.|.#.|.#.#",
+                  "###-#-###-#-#-#",
+                  "#.|.#.#.|.#.|.#",
+                  "#-###-#####-###",
+                  "#.|.#.|.|.#.#.#",
+                  "#-#-#####-#-#-#",
+                  "#.#.|.|.|.#.|.#",
+                  "###############"]
+        it "builds correct map from regex expression" $ do
+          lines (Day20.printMap (Day20.buildMap r1)) `shouldBe` m1
+          lines (Day20.printMap (Day20.buildMap r2)) `shouldBe` m2
+          lines (Day20.printMap (Day20.buildMap r3)) `shouldBe` m3
+        it "finds distance to the furthest room" $ do
+          Day20.solution1 (Day20.buildMap r1) `shouldBe` 18
+          Day20.solution1 (Day20.buildMap r2) `shouldBe` 23
+          Day20.solution1 (Day20.buildMap r3) `shouldBe` 31
