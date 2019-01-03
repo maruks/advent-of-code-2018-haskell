@@ -2,7 +2,7 @@
 
 module Day19
   (
-    parseCode, solution1, solution2
+    parseCode, solution1, solution2, InstructionPointerRegister, Program, RegisterState (..), runElfCode, registerValue
   ) where
 
 import Data.Bits as Bits
@@ -31,6 +31,7 @@ data OpcodeName
   | Eqir
   | Eqri
   | Eqrr
+  | Nop
   deriving (Eq, Show, Ord, Enum, Read)
 
 data RegisterState = RegisterState
@@ -89,6 +90,7 @@ execute o@Opcode{..} s@RegisterState{..} = case name of
                                Eqir -> setRegister s result r where r = if operand_0 == registerValue s operand_1 then 1 else 0
                                Eqri -> setRegister s result r where r = if registerValue s operand_0 == operand_1 then 1 else 0
                                Eqrr -> setRegister s result r where r = if registerValue s operand_0 == registerValue s operand_1 then 1 else 0
+                               Nop  -> s
 
 readOpcode :: String -> Int -> Int -> Int -> Opcode
 readOpcode name op0 op1 res = let n = Char.toUpper (head name) : tail name
@@ -128,11 +130,14 @@ parseCode (x:xs) =
 solution1 :: (InstructionPointerRegister , Program) -> Int -> Int
 solution1 (ipNum, code) returnReg = evalState (runCode code ipNum returnReg 0) (RegisterState 0 0 0 0 0 0)
 
+runElfCode :: (InstructionPointerRegister , Program) -> RegisterState -> RegisterState
+runElfCode (ipNum, code) = execState (runCode code ipNum 0 0)
+
 sumOfFactors :: Int -> Int
 sumOfFactors n = let s = truncate $ sqrt $ fromIntegral n
                  in List.foldl' (\a x -> let (d,r) = quotRem n x
-                                       in if r==0 then a + (if d == x then d else x + d)
-                                                  else a) 0 [1..s]
+                                         in if r==0 then a + (if d == x then d else x + d)
+                                                    else a) 0 [1..s]
 
 
 solution2 :: Int -> Int
