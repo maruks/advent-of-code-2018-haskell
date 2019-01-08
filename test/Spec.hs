@@ -27,6 +27,7 @@ import qualified Day17
 import qualified Day18
 import qualified Day19
 import qualified Day20
+import qualified Day22
 
 main :: IO ()
 main = hspecWith defaultConfig { configFastFail = True} specs
@@ -423,3 +424,6 @@ specs =
           Day20.solution1 (Day20.buildMap r1) `shouldBe` 18
           Day20.solution1 (Day20.buildMap r2) `shouldBe` 23
           Day20.solution1 (Day20.buildMap r3) `shouldBe` 31
+      describe "day 22" $ do
+        it "finds total risk level of specified area" $ do
+          Day22.solution1 (Day22.Point 10 10) 510 `shouldBe` 114

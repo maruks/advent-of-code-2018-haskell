@@ -24,6 +24,7 @@ import qualified Day18
 import qualified Day19
 import qualified Day20
 import qualified Day21
+import qualified Day22
 
 import Text.Regex.PCRE
 
@@ -237,7 +238,17 @@ day21 = do
   file <- readFile "./test/day21.txt"
   let input = Day19.parseCode $ lines file
   print $ Day21.solution1 input
-  print $ Day21.solution2 input
+  -- print $ Day21.solution2 input
+
+day22 :: IO ()
+day22 = do
+  file <- readFile "./test/day22.txt"
+  let (a:b:_) = lines file
+      result1 = a =~ "\\d+" :: AllTextMatches [] String
+      [d] = map read $ getAllTextMatches result1 :: [Int]
+      result2 = b =~ "\\d+" :: AllTextMatches [] String
+      [x,y] = map read $ getAllTextMatches result2 :: [Int]
+  print $ Day22.solution1 (Day22.Point x y) d
 
 main :: IO ()
 main = do
@@ -262,3 +273,4 @@ main = do
   day19
   day20
   day21
+  day22
