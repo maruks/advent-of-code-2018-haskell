@@ -249,6 +249,7 @@ day22 = do
       result2 = b =~ "\\d+" :: AllTextMatches [] String
       [x,y] = map read $ getAllTextMatches result2 :: [Int]
   print $ Day22.solution1 (Day22.Point x y) d
+  print $ Day22.solution2 (Day22.Point x y) d
 
 main :: IO ()
 main = do

@@ -427,3 +427,5 @@ specs =
       describe "day 22" $ do
         it "finds total risk level of specified area" $ do
           Day22.solution1 (Day22.Point 10 10) 510 `shouldBe` 114
+        it "shortest distance to the target" $ do
+          Day22.solution2 (Day22.Point 10 10) 510 `shouldBe` 45
