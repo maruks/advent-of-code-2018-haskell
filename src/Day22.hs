@@ -111,9 +111,6 @@ distance Point {x = x1
                ,y = y1} Point {x = x2
                               ,y = y2} = abs (x2 - x1) + abs (y2 - y1)
 
-sortQueue :: Seq (Point, Equipment, Int) -> Seq (Point, Equipment, Int)
-sortQueue = Seq.reverse . Seq.sortOn (\(_, _, time) -> time)
-
 isEquipmentValid :: RegionType -> Equipment -> Bool
 isEquipmentValid region equipment = List.elem equipment $ requiredTools region
 
