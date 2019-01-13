@@ -25,6 +25,7 @@ import qualified Day19
 import qualified Day20
 import qualified Day21
 import qualified Day22
+import qualified Day23
 
 import Text.Regex.PCRE
 
@@ -251,6 +252,18 @@ day22 = do
   print $ Day22.solution1 (Day22.Point x y) d
   print $ Day22.solution2 (Day22.Point x y) d
 
+parseDay23Input :: String -> Day23.Nanobot
+parseDay23Input s =
+  let result = s =~ "-?\\d+" :: AllTextMatches [] String
+      [x,y,z,r] = map read $ getAllTextMatches result :: [Int]
+  in Day23.Nanobot (Day23.Point x y z) r
+
+day23 :: IO ()
+day23 = do
+  file <- readFile "./test/day23.txt"
+  let input = List.map parseDay23Input $ lines file
+  print $ Day23.solution1 input
+
 main :: IO ()
 main = do
   day1
@@ -275,3 +288,4 @@ main = do
   day20
   day21
   day22
+  day23

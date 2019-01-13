@@ -106,11 +106,6 @@ solution1 target@Point {..} depth =
   let erosion = erosionMap' depth target
   in areaRiskLevel erosion target
 
-distance :: Point -> Point -> Int
-distance Point {x = x1
-               ,y = y1} Point {x = x2
-                              ,y = y2} = abs (x2 - x1) + abs (y2 - y1)
-
 isEquipmentValid :: RegionType -> Equipment -> Bool
 isEquipmentValid region equipment = List.elem equipment $ requiredTools region
 
