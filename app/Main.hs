@@ -263,6 +263,7 @@ day23 = do
   file <- readFile "./test/day23.txt"
   let input = List.map parseDay23Input $ lines file
   print $ Day23.solution1 input
+  print $ Day23.solution2 input
 
 main :: IO ()
 main = do

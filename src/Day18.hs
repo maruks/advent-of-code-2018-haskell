@@ -5,7 +5,6 @@ module Day18
     buildMap, solution1, solution2
   ) where
 
-import Data.Sequence as Seq
 import Data.List as List
 import Data.Map.Strict as Map
 import Data.Set as Set

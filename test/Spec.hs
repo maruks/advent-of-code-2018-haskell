@@ -28,6 +28,7 @@ import qualified Day18
 import qualified Day19
 import qualified Day20
 import qualified Day22
+import qualified Day23
 
 main :: IO ()
 main = hspecWith defaultConfig { configFastFail = True} specs
@@ -429,3 +430,12 @@ specs =
           Day22.solution1 (Day22.Point 10 10) 510 `shouldBe` 114
         it "shortest distance to the target" $ do
           Day22.solution2 (Day22.Point 10 10) 510 `shouldBe` 45
+      describe "day 23" $ do
+        it "finds the coordinate in range of the most nanobots" $ do
+          let bots = [Day23.Nanobot (Day23.Point 10 12 12) 2,
+                      Day23.Nanobot (Day23.Point 12 14 12) 2,
+                      Day23.Nanobot (Day23.Point 16 12 12) 4,
+                      Day23.Nanobot (Day23.Point 14 14 14) 6,
+                      Day23.Nanobot (Day23.Point 50 50 50) 200,
+                      Day23.Nanobot (Day23.Point 10 10 10) 5]
+          Day23.solution2 bots `shouldBe` 36
