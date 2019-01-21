@@ -29,6 +29,8 @@ import qualified Day19
 import qualified Day20
 import qualified Day22
 import qualified Day23
+import qualified Day24
+import Day24 (Damage (..), Team (..), Group (..))
 
 main :: IO ()
 main = hspecWith defaultConfig { configFastFail = True} specs
@@ -439,3 +441,10 @@ specs =
                       Day23.Nanobot (Day23.Point 50 50 50) 200,
                       Day23.Nanobot (Day23.Point 10 10 10) 5]
           Day23.solution2 bots `shouldBe` 36
+      describe "day 24" $ do
+        let group1 = Group "m1" 17 5390 (Set.fromList [Radiation, Bludgeoning]) Set.empty Fire TeamA 4507 2
+            group2 = Group "m2" 989 1274 (Set.fromList [Bludgeoning, Slashing]) (Set.fromList [Fire]) Slashing TeamA 25 3
+            group3 = Group "n1" 801 4706 (Set.fromList [Radiation]) Set.empty Bludgeoning TeamB 116 1
+            group4 = Group "n2" 4485 2961 (Set.fromList [Fire, Cold]) (Set.fromList [Radiation]) Slashing TeamB 12 4
+        it "returns the sum of survived units" $ do
+          Day24.solution1 [group1, group2, group3, group4] `shouldBe` 5216
