@@ -2,6 +2,8 @@ module Main where
 
 import qualified Data.Map.Strict as Map
 import Data.List as List
+import Data.Char as Char
+import qualified Data.Set as Set
 
 import qualified Day1
 import qualified Day2
@@ -26,6 +28,7 @@ import qualified Day20
 import qualified Day21
 import qualified Day22
 import qualified Day23
+import qualified Day24
 
 import Text.Regex.PCRE
 
@@ -265,6 +268,46 @@ day23 = do
   print $ Day23.solution1 input
   print $ Day23.solution2 input
 
+damage :: String -> Day24.Damage
+damage = read . capcase
+         where capcase (x:xs) = Char.toUpper x : xs
+
+damageSet :: String -> Set.Set Day24.Damage
+damageSet =
+  Set.fromList . List.map damage . words . removeCommas
+  where removeCommas = List.filter ((/=) ',')
+
+parseDay24Input :: Show i => i -> Day24.Team -> String -> Day24.Group
+parseDay24Input index team s =
+  let result = s =~ "(\\d+) units each with (\\d+) hit points\\s?(?:\\((immune|weak) to ((?:(?:\\w+)(?:,\\s)?)+)(?:;\\s(immune|weak) to ((?:(?:\\w+)(?:,\\s)?)+))?\\))?\\s?with an attack that does (\\d+) (\\w+) damage at initiative (\\d+)\\s*" :: AllTextSubmatches [] String
+      [_, us, hp, g1, d1, g2 , d2, dp, dt, i] = getAllTextSubmatches result
+      name = "group " ++ show index
+      units = read us
+      hitPoints = read hp
+      weak = if g1 == "weak"
+             then damageSet d1
+             else if g2 == "weak"
+                  then damageSet d2
+                  else Set.empty
+      immune = if g1 == "immune"
+               then damageSet d1
+               else if g2 == "immune"
+                    then damageSet d2
+                    else Set.empty
+      damageType = damage dt
+      damage_ = read dp
+      initiative = read i
+  in Day24.Group name units hitPoints weak immune damageType team damage_ initiative
+
+day24 :: IO ()
+day24 = do
+  file1 <- readFile "./test/day24-1.txt"
+  file2 <- readFile "./test/day24-2.txt"
+  let groupsA = List.map (\(i,s) -> parseDay24Input i Day24.TeamA s) $ List.zip [1..] $ lines file1
+      groupsB = List.map (\(i,s) -> parseDay24Input i Day24.TeamB s) $ List.zip [50..] $ lines file2
+      groups = groupsA ++ groupsB
+  print $ Day24.solution1 groups
+
 main :: IO ()
 main = do
   day1
@@ -290,3 +333,4 @@ main = do
   day21
   day22
   day23
+  day24

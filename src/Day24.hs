@@ -93,5 +93,6 @@ combatResult groups =
      else combatResult $ performAttacks attackers groups targets
 
 solution1 :: [Group] -> Int
-solution1 groups = let results = combatResult $ Map.fromList $ List.zip (name <$> groups) groups
-                   in List.sum $ units <$> results
+solution1 groups =
+  List.sum $ units <$> results
+  where results = combatResult $ Map.fromList $ List.zip (name <$> groups) groups
