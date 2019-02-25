@@ -2,7 +2,7 @@
 
 module Day24
   (
-    solution1, Damage (..), Team (..), Group (..)
+    solution1, solution2, boostedTeamWins, Damage (..), Team (..), Group (..)
   ) where
 
 import Data.List as List
@@ -30,8 +30,8 @@ effectivePower :: Group -> Int
 effectivePower Group{..} = units * damage
 
 instance Ord Group where
-  compare g1@Group{units = u1, hitPoints = hp1, initiative = i1} g2@Group{units = u2, hitPoints = hp2, initiative = i2} =
-    let cEffPow = compare (effectivePower g2) (effectivePower g1)
+  compare g1@Group{initiative = i1} g2@Group{initiative = i2} =
+    let cEffPow = compare (effectivePower g1) (effectivePower g2)
         cIn = compare i1 i2
     in cEffPow <> cIn
 
@@ -68,13 +68,13 @@ selectTargets' (x:xs) defenders =
     Nothing -> selectTargets' xs defenders
 
 dealDamage :: Group -> Group -> Group
-dealDamage attacker@Group{name = n} defender@Group{..} =
+dealDamage attacker defender@Group{..} =
   let amount = damageAmount attacker defender
       unitsKilled = amount `div` hitPoints
-  in defender {units = max 0 $ units - unitsKilled}
+  in defender {units = max 0 (units - unitsKilled)}
 
 selectTargets :: Map GroupId Group -> Map GroupId GroupId
-selectTargets group = Map.fromList $ selectTargets' (List.sort $ Map.elems group) group
+selectTargets group = Map.fromList $ selectTargets' (List.sortBy (comparing Down) $ Map.elems group) group
 
 performAttacks :: [GroupId] -> Map GroupId Group -> Map GroupId GroupId -> Map GroupId Group
 performAttacks [] groups _ = groups
@@ -86,13 +86,31 @@ performAttacks (x:xs) groups targets =
 
 combatResult :: Map GroupId Group -> Map GroupId Group
 combatResult groups =
-  let attackers = List.map name $ List.sortBy (comparing (Down . initiative)) $ Map.elems groups
+  let attackers = List.map name $ List.sortOn (Down . initiative) $ Map.elems groups
       targets = selectTargets groups
-  in if Map.null targets
+      nextGroups = Map.filter (\Group{..} -> units > 0) $ performAttacks attackers groups targets
+  in if Map.null targets || groups == nextGroups
      then groups
-     else combatResult $ performAttacks attackers groups targets
+     else combatResult nextGroups
+
+groupsMap :: [Group] -> Map GroupId Group
+groupsMap groups = Map.fromList $ List.zip (name <$> groups) groups
 
 solution1 :: [Group] -> Int
 solution1 groups =
-  List.sum $ units <$> results
-  where results = combatResult $ Map.fromList $ List.zip (name <$> groups) groups
+  List.sum $ units <$> result
+  where result = combatResult $ groupsMap groups
+
+boostedTeamWins :: Int -> Team -> [Group] -> (Bool, Int)
+boostedTeamWins boost team_ groups =
+  let boosted = List.map (\g@Group{..} -> if team == team_
+                                          then g {damage = damage + boost}
+                                          else g) groups
+      result = combatResult $ groupsMap boosted
+      alive = Map.elems result
+  in (List.all (\Group{team=t} -> t == team_) alive, List.sum $ units <$> alive)
+
+solution2 :: [Group] -> Int
+solution2 groups =
+  let results = List.map (\b -> boostedTeamWins b TeamA groups) [0..]
+  in snd $ head $ List.dropWhile (not . fst) results

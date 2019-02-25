@@ -307,6 +307,7 @@ day24 = do
       groupsB = List.map (\(i,s) -> parseDay24Input i Day24.TeamB s) $ List.zip [50..] $ lines file2
       groups = groupsA ++ groupsB
   print $ Day24.solution1 groups
+  print $ Day24.solution2 groups
 
 main :: IO ()
 main = do

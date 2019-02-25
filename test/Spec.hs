@@ -448,3 +448,6 @@ specs =
             group4 = Group "n2" 4485 2961 (Set.fromList [Fire, Cold]) (Set.fromList [Radiation]) Slashing TeamB 12 4
         it "returns the sum of survived units" $ do
           Day24.solution1 [group1, group2, group3, group4] `shouldBe` 5216
+        it "determines whether team can win after a boost" $ do
+          Day24.boostedTeamWins 0 TeamA [group1, group2, group3, group4] `shouldBe` (False, 5216)
+          Day24.boostedTeamWins 1570 TeamA [group1, group2, group3, group4] `shouldBe` (True, 51)
