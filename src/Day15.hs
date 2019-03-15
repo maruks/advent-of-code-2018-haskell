@@ -1,4 +1,4 @@
-{-# LANGUAGE RecordWildCards, PatternSynonyms #-}
+{-# LANGUAGE RecordWildCards, PatternSynonyms, LambdaCase #-}
 
 module Day15
   ( pointsToTargets
@@ -100,20 +100,18 @@ targets unit terrain =
   let elf = isElf unit
   in Map.keys $
      Map.filter
-       (\e ->
-           case e of
-             Warrior u -> isElf u /= elf
-             _ -> False)
+       (\case           
+          Warrior u -> isElf u /= elf
+          _ -> False)
        terrain
 
 enemyUnits :: Unit -> Terrain -> Bool
 enemyUnits unit terrain =
   let elf = isElf unit
   in List.any
-       (\e ->
-           case e of
-             Warrior u -> isElf u /= elf
-             _ -> False) $
+       (\case
+          Warrior u -> isElf u /= elf
+          _ -> False) $
      Map.elems terrain
 
 compareUnits :: (Point, Unit) -> (Point, Unit) -> Ordering
@@ -239,20 +237,18 @@ attackUnit (point, Goblin hp i) terrain attackPower =
 totalHitPoints :: Terrain -> Int
 totalHitPoints terrain =
   List.sum $
-  (\e ->
-      case e of
-        Warrior (Elf h _) -> h
-        Warrior (Goblin h _) -> h
-        _ -> 0) <$>
+  (\case 
+      Warrior (Elf h _) -> h
+      Warrior (Goblin h _) -> h
+      _ -> 0) <$>
   Map.elems terrain
 
 numberOfElves :: Terrain -> Int
 numberOfElves terrain =
   List.sum $
-  (\e ->
-      case e of
-        Warrior (Elf _ _) -> 1
-        _ -> 0) <$>
+  (\case       
+      Warrior (Elf _ _) -> 1
+      _ -> 0) <$>
   Map.elems terrain
 
 getUnitId :: Terrain -> Point -> String
@@ -325,10 +321,9 @@ solution2 terrain = solution2' (numberOfElves terrain) terrain 4
 units :: Terrain -> Terrain
 units =
   Map.filter
-    (\v ->
-        case v of
-          Warrior _ -> True
-          _ -> False)
+    (\case        
+        Warrior _ -> True
+        _ -> False)
 
 printMap' :: [Point] -> Int -> Terrain -> String
 printMap' [] _ _ = []

@@ -74,7 +74,7 @@ dealDamage attacker defender@Group{..} =
   in defender {units = max 0 (units - unitsKilled)}
 
 selectTargets :: Map GroupId Group -> Map GroupId GroupId
-selectTargets group = Map.fromList $ selectTargets' (List.sortBy (comparing Down) $ Map.elems group) group
+selectTargets group = Map.fromList $ selectTargets' (sortOn Down $ Map.elems group) group
 
 performAttacks :: [GroupId] -> Map GroupId Group -> Map GroupId GroupId -> Map GroupId Group
 performAttacks [] groups _ = groups
