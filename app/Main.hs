@@ -29,6 +29,7 @@ import qualified Day21
 import qualified Day22
 import qualified Day23
 import qualified Day24
+import qualified Day25
 
 import Text.Regex.PCRE
 
@@ -308,6 +309,15 @@ day24 = do
       groups = groupsA ++ groupsB
   print $ Day24.solution1 groups
   print $ Day24.solution2 groups
+  
+day25 :: IO ()
+day25 = do
+  file <- readFile "./test/day25.txt"    
+  let parse :: String -> (Int,Int,Int,Int)
+      parse s = let [a,b,c,d] = read $ "[" ++ s ++ "]" ::  [Int]
+                in (a,b,c,d)
+      stars = List.map parse $ lines file
+  print $ Day25.solution1 stars
 
 main :: IO ()
 main = do
@@ -335,3 +345,4 @@ main = do
   day22
   day23
   day24
+  day25

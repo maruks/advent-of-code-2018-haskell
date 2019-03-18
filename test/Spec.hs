@@ -31,6 +31,7 @@ import qualified Day22
 import qualified Day23
 import qualified Day24
 import Day24 (Damage (..), Team (..), Group (..))
+import qualified Day25
 
 main :: IO ()
 main = hspecWith defaultConfig { configFastFail = True} specs
@@ -39,50 +40,50 @@ specs :: Spec
 specs =
     describe "Advent of Code" $ do
       describe "day 1" $ do
-        it "returns resulting frequency" $ do
+        it "returns resulting frequency" $ 
           Day1.solution1 [1 , 2 , -1] `shouldBe` 2
-        it "returns first duplicate frequency" $ do
+        it "returns first duplicate frequency" $ 
           Day1.solution2 [ 3, 3, 4, -2, -4] `shouldBe` 10
       describe "day 2" $ do
-        it "returns checksum" $ do
+        it "returns checksum" $ 
           Day2.solution1 [ "abcdef" , "bababc" , "abbcde" , "abcccd" , "aabcdd" , "abcdee" , "ababab"] `shouldBe` 12
-        it "returns common letters of two similar strings" $ do
+        it "returns common letters of two similar strings" $ 
           Day2.solution2 [ "abcde","fghij","klmno","pqrst","fguij","axcye","wvxyz"] `shouldBe` "fgij"
       describe "day 3" $ do
-        it "returns number of overlapping points" $ do
+        it "returns number of overlapping points" $ 
           Day3.solution1 [ Day3.Rectangle 1 1 3 4 4, Day3.Rectangle 2 3 1 4 4, Day3.Rectangle 3 5 5 2 2] `shouldBe` 4
-        it "returns id of first non overlapping rectangle" $ do
+        it "returns id of first non overlapping rectangle" $ 
           Day3.solution2 [ Day3.Rectangle 1 1 3 4 4, Day3.Rectangle 2 3 1 4 4, Day3.Rectangle 3 5 5 2 2] `shouldBe` 3
       describe "day 4" $ do
-        it "returns id of the most sleepy guard multiplied by number of minute" $ do
+        it "returns id of the most sleepy guard multiplied by number of minute" $ 
           Day4.solution1 [BeginShift 1 3, FallAsleep 2 10, WakeUp 3 30,
                           BeginShift 4 2, FallAsleep 5 10, WakeUp 6 50,
                           BeginShift 7 3, FallAsleep 8 20, WakeUp 9 21] `shouldBe` 20 -- 2 * 20
-        it "returns id of the most frequently asleep guard multiplied by number of minute" $ do
+        it "returns id of the most frequently asleep guard multiplied by number of minute" $ 
           Day4.solution2 [BeginShift 1 3, FallAsleep 2 18, WakeUp 3 25,
                           BeginShift 4 2, FallAsleep 5 10, WakeUp 6 50,
                           BeginShift 7 3, FallAsleep 8 20, WakeUp 9 21] `shouldBe` 60 -- 3 * 20
       describe "day 5" $ do
-        it "returns number of elements left after alchemical reduction" $ do
+        it "returns number of elements left after alchemical reduction" $ 
           Day5.solution1 "dabAcCaCBAcCcaDA" `shouldBe` 10 -- dabCBAcaDA
-        it "returns number of elements left after alchemical reduction with one element type removed" $ do
+        it "returns number of elements left after alchemical reduction with one element type removed" $ 
           Day5.solution2 "dabAcCaCBAcCcaDA" `shouldBe` 4 -- daDA
       describe "day 6" $ do
-        it "returns size or the largest finite area" $ do
+        it "returns size or the largest finite area" $ 
           Day6.solution1 [(1, 1),(1, 6),(8, 3),(3, 4),(5, 5),(8, 9)] `shouldBe` 17 -- (5,5)
-        it "returns size of region near as many coordinates as possible" $ do
+        it "returns size of region near as many coordinates as possible" $ 
           Day6.solution2 [(1, 1),(1, 6),(8, 3),(3, 4),(5, 5),(8, 9)] 32 `shouldBe` 16
       describe "day 7" $ do
-        it "returns steps in correct order" $ do
+        it "returns steps in correct order" $ 
           Day7.solution1 [('C', 'A'), ('C','F'),('A','B'),('A','D'),('B','E'),('D','E'),('F','E')] `shouldBe` "CABDFE"
-        it "returns how long it takes to finish all steps" $ do
+        it "returns how long it takes to finish all steps" $ 
           Day7.solution2 [('C', 'A'), ('C','F'),('A','B'),('A','D'),('B','E'),('D','E'),('F','E')] 2 0 `shouldBe` 15
       describe "day 8" $ do
-        it "returns the sum of all metadata" $ do
+        it "returns the sum of all metadata" $ 
           Day8.solution1 [2, 3, 0, 3, 10, 11, 12, 1, 1, 0, 1, 99, 2, 1, 1, 2] `shouldBe` 138
-        it "returns value of the tree node" $ do
+        it "returns value of the tree node" $ 
           Day8.solution2 [2, 3, 0, 3, 10, 11, 12, 1, 1, 0, 1, 99, 2, 1, 1, 2] `shouldBe` 66
-      describe "day 9" $ do
+      describe "day 9" $ 
         it "returns the highest score" $ do
           Day9.solution1 9 25 `shouldBe` 32
           Day9.solution1 10 1618 `shouldBe` 8317
@@ -91,9 +92,9 @@ specs =
           Day9.solution1 21 6111 `shouldBe` 54718
           Day9.solution1 30 5807 `shouldBe` 37305
       describe "day 10" $ do
-        it "returns points when they cover the smallest area" $ do
+        it "returns points when they cover the smallest area" $ 
           Day10.solution1 [((1,1),(1,1)), ((-1,1),(5,1)), ((1,-1),(1,5)), ((-1,-1),(5,5))] `shouldBe` Set.fromList [(3,3)]
-        it "returns time it would take for message to appear" $ do
+        it "returns time it would take for message to appear" $ 
           Day10.solution2 [((1,1),(1,1)), ((-1,1),(5,1)), ((1,-1),(1,5)), ((-1,-1),(5,5))] `shouldBe` 2
       describe "day 11" $ do
         it "grid contains cells with correct power level" $ do
@@ -315,9 +316,9 @@ specs =
               round_17_map = Day15.printMap $ Day15.buildMap $ lines file_17
               round_42_map = Day15.printMap $ Day15.buildMap $ lines file_42
               example_1_rounds = Day15.rounds example1 16
-              round_1 = fst $ head $ example_1_rounds
-              round_17 = fst $ head $ List.drop 16 $ example_1_rounds
-              round_42 = fst $ head $ List.drop 41 $ example_1_rounds
+              round_1 = fst $ head example_1_rounds
+              round_17 = fst (example_1_rounds !! 16)
+              round_42 = fst (example_1_rounds !! 41)
           Day15.solution2 map1 `shouldBe` 4988
           Day15.solution2 map3 `shouldBe` 31284
           Day15.solution2 map4 `shouldBe` 3478
@@ -328,8 +329,8 @@ specs =
           Day15.printMap round_1 `shouldBe` round_1_map
           Day15.printMap round_17 `shouldBe` round_17_map
           Day15.printMap round_42 `shouldBe` round_42_map
-      describe "day 16" $ do
-        it "returns how many opcodes are valid for given sample" $ do
+      describe "day 16" $ 
+        it "returns how many opcodes are valid for given sample" $ 
           Day16.solution1 [((3, 2, 1, 1),(9, 2, 1, 2),(3, 2, 2, 1))] `shouldBe` 1
       describe "day 17" $ do
         it "returns how many tiles are wet" $ do
@@ -428,11 +429,11 @@ specs =
           Day20.solution1 (Day20.buildMap r2) `shouldBe` 23
           Day20.solution1 (Day20.buildMap r3) `shouldBe` 31
       describe "day 22" $ do
-        it "finds total risk level of specified area" $ do
+        it "finds total risk level of specified area" $ 
           Day22.solution1 (Day22.Point 10 10) 510 `shouldBe` 114
-        it "shortest distance to the target" $ do
+        it "shortest distance to the target" $ 
           Day22.solution2 (Day22.Point 10 10) 510 `shouldBe` 45
-      describe "day 23" $ do
+      describe "day 23" $ 
         it "finds the coordinate in range of the most nanobots" $ do
           let bots = [Day23.Nanobot (Day23.Point 10 12 12) 2,
                       Day23.Nanobot (Day23.Point 12 14 12) 2,
@@ -446,8 +447,18 @@ specs =
             group2 = Group "m2" 989 1274 (Set.fromList [Bludgeoning, Slashing]) (Set.fromList [Fire]) Slashing TeamA 25 3
             group3 = Group "n1" 801 4706 (Set.fromList [Radiation]) Set.empty Bludgeoning TeamB 116 1
             group4 = Group "n2" 4485 2961 (Set.fromList [Fire, Cold]) (Set.fromList [Radiation]) Slashing TeamB 12 4
-        it "returns the sum of survived units" $ do
+        it "returns the sum of survived units" $ 
           Day24.solution1 [group1, group2, group3, group4] `shouldBe` 5216
         it "determines whether team can win after a boost" $ do
           Day24.boostedTeamWins 0 TeamA [group1, group2, group3, group4] `shouldBe` (False, 5216)
           Day24.boostedTeamWins 1570 TeamA [group1, group2, group3, group4] `shouldBe` (True, 51)
+      describe "day 25" $ do
+        let example0 = [(0,0,0,0),(3,0,0,0),(0,3,0,0),(0,0,3,0),(0,0,0,3),(0,0,0,6),(9,0,0,0),(12,0,0,0)]
+            example1 = [(-1,2,2,0),(0,0,2,-2),(0,0,0,-2),(-1,2,0,0),(-2,-2,-2,2),(3,0,2,-1),(-1,3,2,2),(-1,0,-1,0),(0,2,1,-2),(3,0,0,0)]
+            example2 = [(1,-1,0,1),(2,0,-1,0),(3,2,-1,0),(0,0,3,1),(0,0,-1,-1),(2,3,-2,0),(-2,2,0,0),(2,-2,0,-1),(1,-1,0,-1),(3,2,0,2)]
+            example3 = [(1,-1,-1,-2),(-2,-2,0,1),(0,2,1,3),(-2,3,-2,1),(0,2,3,-2),(-1,-1,1,-2),(0,-2,-1,0),(-2,2,3,-1),(1,2,2,0),(-1,-2,0,-2)]
+        it "returns number of constellations" $ do         
+          Day25.solution1 example0 `shouldBe` 2
+          Day25.solution1 example1 `shouldBe` 4
+          Day25.solution1 example2 `shouldBe` 3
+          Day25.solution1 example3 `shouldBe` 8

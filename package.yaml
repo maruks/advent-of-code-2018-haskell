@@ -27,9 +27,10 @@ library:
   dependencies:
   - containers
   - vector
-  - primitive
+  - primitive  
   - mtl
   - regex-pcre
+  - union-find  
 
 executables:
   advent-of-code-exe:
