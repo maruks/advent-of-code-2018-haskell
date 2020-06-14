@@ -160,7 +160,7 @@ day12 = do
       solution2 = r300 + ((50000000000 - 300) `div` 100) * d100
 
   print $ Day12.solution1 ts init 20
-  print $ solution2
+  print solution2
 
 day13 :: IO ()
 day13 = do
@@ -276,7 +276,7 @@ damage = read . capcase
 damageSet :: String -> Set.Set Day24.Damage
 damageSet =
   Set.fromList . List.map damage . words . removeCommas
-  where removeCommas = List.filter ((/=) ',')
+  where removeCommas = List.filter (',' /=)
 
 parseDay24Input :: Show i => i -> Day24.Team -> String -> Day24.Group
 parseDay24Input index team s =
@@ -285,16 +285,14 @@ parseDay24Input index team s =
       name = "group " ++ show index
       units = read us
       hitPoints = read hp
-      weak = if g1 == "weak"
-             then damageSet d1
-             else if g2 == "weak"
-                  then damageSet d2
-                  else Set.empty
-      immune = if g1 == "immune"
-               then damageSet d1
-               else if g2 == "immune"
-                    then damageSet d2
-                    else Set.empty
+      weak
+        | g1 == "weak" = damageSet d1
+        | g2 == "weak" = damageSet d2
+        | otherwise = Set.empty
+      immune
+        | g1 == "immune" = damageSet d1
+        | g2 == "immune" = damageSet d2
+        | otherwise = Set.empty
       damageType = damage dt
       damage_ = read dp
       initiative = read i
@@ -309,10 +307,10 @@ day24 = do
       groups = groupsA ++ groupsB
   print $ Day24.solution1 groups
   print $ Day24.solution2 groups
-  
+
 day25 :: IO ()
 day25 = do
-  file <- readFile "./test/day25.txt"    
+  file <- readFile "./test/day25.txt"
   let parse :: String -> (Int,Int,Int,Int)
       parse s = let [a,b,c,d] = read $ "[" ++ s ++ "]" ::  [Int]
                 in (a,b,c,d)
